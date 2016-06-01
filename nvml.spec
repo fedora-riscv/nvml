@@ -1,7 +1,7 @@
 
 Name:		nvml
 Version:	1.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Non-Volatile Memory Library
 License:	BSD
 URL:		http://pmem.io/nvml
@@ -25,10 +25,7 @@ BuildRequires:	man
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340635
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340636
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340637
-ExcludeArch:	%{ix86}
-ExcludeArch:	%{arm}
-ExcludeArch:	s390x
-ExcludeArch:	ppc ppc64 ppc64le
+ExclusiveArch: x86_64
 
 %description
 The NVM Library is a collection of libraries for using memory-mapped
@@ -361,6 +358,9 @@ make check
 
 
 %changelog
+* Wed Jun 01 2016 Dan Horák <dan[at]danny.cz> - 1.0-3
+- switch to ExclusiveArch
+
 * Sun May 29 2016 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.0-2
 - Exclude PPC architecture
 - Add bug numbers for excluded architectures
