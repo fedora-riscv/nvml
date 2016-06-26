@@ -1,18 +1,18 @@
 
 Name:		nvml
-Version:	1.0
-Release:	3%{?dist}
+Version:	1.1
+Release:	1%{?dist}
 Summary:	Non-Volatile Memory Library
 License:	BSD
 URL:		http://pmem.io/nvml
-Source0:	https://github.com/pmem/nvml/archive/%{version}.tar.gz
-Patch0:		1.0-0001-test-fix-timeouting-obj_tx_add_range-test.patch
-Patch1:		1.0-0002-all-always-append-EXTRA_CFLAGS-after-our-CFLAGS.patch
+Source0:	https://github.com/pmem/%{name}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildRequires:	glibc-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	man
+BuildRequires:	pkgconfig
+
 
 # By design, NVML does not support any 32-bit architecture.
 # Due to dependency on xmmintrin.h and some inline assembly, it can be
@@ -283,6 +283,43 @@ applications that want to specifically make use of libvmmalloc.
 %doc ChangeLog CONTRIBUTING.md README.md
 
 
+%package -n libpmempool
+Summary: Persistent Memory pool management library
+Group: System Environment/Libraries
+%description -n libpmempool
+The libpmempool library provides a set of utilities for off-line administration,
+analysis, diagnostics and repair of persistent memory pools created
+by libpmemlog, libpemblk and libpmemobj libraries.
+
+%files -n libpmempool
+%defattr(644,root,root,-)
+%{_libdir}/libpmempool.so.*
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libpmempool-devel
+Summary: Development files for Persistent Memory pool management library
+Group: Development/Libraries
+Requires: libpmempool = %{version}-%{release}
+%description -n libpmempool-devel
+The libpmempool library provides a set of utilities for off-line administration,
+analysis, diagnostics and repair of persistent memory pools created
+by libpmemlog, libpemblk and libpmemobj libraries.
+
+%files -n libpmempool-devel
+%defattr(644,root,root,-)
+%dir %{_libdir}/nvml_debug
+%{_libdir}/libpmempool.so
+%{_libdir}/pkgconfig/libpmempool.pc
+%{_libdir}/nvml_debug/libpmempool.so
+%{_libdir}/nvml_debug/libpmempool.so.*
+%{_includedir}/libpmempool.h
+%{_mandir}/man3/libpmempool.3.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
 %package tools
 Summary: Utilities for Persistent Memory
 Group: System Environment/Base
@@ -297,6 +334,7 @@ Useful applications for administration and diagnosis of persistent memory.
 %{_mandir}/man1/pmempool-dump.1.gz
 %{_mandir}/man1/pmempool-check.1.gz
 %{_mandir}/man1/pmempool-rm.1.gz
+%{_mandir}/man1/pmempool-convert.1.gz
 %config(noreplace) %{_sysconfdir}/bash_completion.d/pmempool.sh
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
@@ -304,9 +342,6 @@ Useful applications for administration and diagnosis of persistent memory.
 
 %prep
 %setup -q -n %{name}-%{version}
-%patch0 -p1
-chmod +x src/test/obj_tx_add_range/TEST2
-%patch1 -p1
 
 
 %build
@@ -350,6 +385,8 @@ make check
 %postun -n libvmem -p /sbin/ldconfig
 %post   -n libvmmalloc -p /sbin/ldconfig
 %postun -n libvmmalloc -p /sbin/ldconfig
+%post   -n libpmempool -p /sbin/ldconfig
+%postun -n libpmempool -p /sbin/ldconfig
 
 
 %if 0%{?__debug_package} == 0
@@ -358,6 +395,12 @@ make check
 
 
 %changelog
+* Sun Jun 26 2016 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.1-1
+- NVML 1.1 release
+- Update link to source tarball
+- Add libpmempool subpackage
+- Remove obsolete patches
+
 * Wed Jun 01 2016 Dan Horák <dan[at]danny.cz> - 1.0-3
 - switch to ExclusiveArch
 
