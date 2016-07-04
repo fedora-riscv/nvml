@@ -1,7 +1,7 @@
 
 Name:		nvml
 Version:	1.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Non-Volatile Memory Library
 License:	BSD
 URL:		http://pmem.io/nvml
@@ -12,6 +12,10 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	man
 BuildRequires:	pkgconfig
+
+
+# Debug variants of the libraries should be filtered out of the provides.
+%global __provides_exclude_from ^%{_libdir}/nvml_debug/.*\\.so.*$
 
 
 # By design, NVML does not support any 32-bit architecture.
@@ -65,13 +69,33 @@ convenient.
 
 %files -n libpmem-devel
 %defattr(644,root,root,-)
-%dir %{_libdir}/nvml_debug
 %{_libdir}/libpmem.so
 %{_libdir}/pkgconfig/libpmem.pc
-%{_libdir}/nvml_debug/libpmem.so
-%{_libdir}/nvml_debug/libpmem.so.*
 %{_includedir}/libpmem.h
 %{_mandir}/man3/libpmem.3.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libpmem-debug
+Summary: Debug variant of the low-level persistent memory library
+Group: Development/Libraries
+Requires: libpmem = %{version}-%{release}
+%description -n libpmem-debug
+The libpmem provides low level persistent memory support. In particular,
+support for the persistent memory instructions for flushing changes
+to pmem is provided.
+
+This sub-package contains debug variant of the library, providing
+run-time assertions and trace points. The typical way to access the
+debug version is to set the environment variable LD_LIBRARY_PATH to
+/usr/lib64/nvml_debug.
+
+%files -n libpmem-debug
+%defattr(644,root,root,-)
+%dir %{_libdir}/nvml_debug
+%{_libdir}/nvml_debug/libpmem.so
+%{_libdir}/nvml_debug/libpmem.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -109,13 +133,33 @@ more generally useful.
 
 %files -n libpmemblk-devel
 %defattr(644,root,root,-)
-%dir %{_libdir}/nvml_debug
 %{_libdir}/libpmemblk.so
 %{_libdir}/pkgconfig/libpmemblk.pc
-%{_libdir}/nvml_debug/libpmemblk.so
-%{_libdir}/nvml_debug/libpmemblk.so.*
 %{_includedir}/libpmemblk.h
 %{_mandir}/man3/libpmemblk.3.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libpmemblk-debug
+Summary: Debug variant of the Persistent Memory Resident Array of Blocks library
+Group: Development/Libraries
+Requires: libpmemblk = %{version}-%{release}
+%description -n libpmemblk-debug
+The libpmemblk implements a pmem-resident array of blocks, all the same
+size, where a block is updated atomically with respect to power
+failure or program interruption (no torn blocks).
+
+This sub-package contains debug variant of the library, providing
+run-time assertions and trace points. The typical way to access the
+debug version is to set the environment variable LD_LIBRARY_PATH to
+/usr/lib64/nvml_debug.
+
+%files -n libpmemblk-debug
+%defattr(644,root,root,-)
+%dir %{_libdir}/nvml_debug
+%{_libdir}/nvml_debug/libpmemblk.so
+%{_libdir}/nvml_debug/libpmemblk.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -148,13 +192,34 @@ level libraries like libpmemobj to be more generally useful.
 
 %files -n libpmemlog-devel
 %defattr(644,root,root,-)
-%dir %{_libdir}/nvml_debug
 %{_libdir}/libpmemlog.so
 %{_libdir}/pkgconfig/libpmemlog.pc
-%{_libdir}/nvml_debug/libpmemlog.so
-%{_libdir}/nvml_debug/libpmemlog.so.*
 %{_includedir}/libpmemlog.h
 %{_mandir}/man3/libpmemlog.3.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libpmemlog-debug
+Summary: Debug variant of the Persistent Memory Resident Log File library
+Group: Development/Libraries
+Requires: libpmemlog = %{version}-%{release}
+%description -n libpmemlog-debug
+The libpmemlog library provides a pmem-resident log file. This
+library is provided for cases requiring an append-mostly file to
+record variable length entries. Most developers will find higher
+level libraries like libpmemobj to be more generally useful.
+
+This sub-package contains debug variant of the library, providing
+run-time assertions and trace points. The typical way to access the
+debug version is to set the environment variable LD_LIBRARY_PATH to
+/usr/lib64/nvml_debug.
+
+%files -n libpmemlog-debug
+%defattr(644,root,root,-)
+%dir %{_libdir}/nvml_debug
+%{_libdir}/nvml_debug/libpmemlog.so
+%{_libdir}/nvml_debug/libpmemlog.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -187,13 +252,34 @@ probably want to start with this library.
 
 %files -n libpmemobj-devel
 %defattr(644,root,root,-)
-%dir %{_libdir}/nvml_debug
 %{_libdir}/libpmemobj.so
 %{_libdir}/pkgconfig/libpmemobj.pc
-%{_libdir}/nvml_debug/libpmemobj.so
-%{_libdir}/nvml_debug/libpmemobj.so.*
 %{_includedir}/libpmemobj.h
 %{_mandir}/man3/libpmemobj.3.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libpmemobj-debug
+Summary: Debug variant of the Persistent Memory Transactional Object Store library
+Group: Development/Libraries
+Requires: libpmemobj = %{version}-%{release}
+%description -n libpmemobj-debug
+The libpmemobj library provides a transactional object store,
+providing memory allocation, transactions, and general facilities for
+persistent memory programming. Developers new to persistent memory
+probably want to start with this library.
+
+This sub-package contains debug variant of the library, providing
+run-time assertions and trace points. The typical way to access the
+debug version is to set the environment variable LD_LIBRARY_PATH to
+/usr/lib64/nvml_debug.
+
+%files -n libpmemobj-debug
+%defattr(644,root,root,-)
+%dir %{_libdir}/nvml_debug
+%{_libdir}/nvml_debug/libpmemobj.so
+%{_libdir}/nvml_debug/libpmemobj.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -227,13 +313,33 @@ applications that want to make use of libvmem.
 
 %files -n libvmem-devel
 %defattr(644,root,root,-)
-%dir %{_libdir}/nvml_debug
 %{_libdir}/libvmem.so
 %{_libdir}/pkgconfig/libvmem.pc
-%{_libdir}/nvml_debug/libvmem.so
-%{_libdir}/nvml_debug/libvmem.so.*
 %{_includedir}/libvmem.h
 %{_mandir}/man3/libvmem.3.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libvmem-debug
+Summary: Debug variant of the Volatile Memory allocation library
+Group: Development/Libraries
+Requires: libvmem = %{version}-%{release}
+%description -n libvmem-debug
+The libvmem library turns a pool of persistent memory into a volatile
+memory pool, similar to the system heap but kept separate and with
+its own malloc-style API.
+
+This sub-package contains debug variant of the library, providing
+run-time assertions and trace points. The typical way to access the
+debug version is to set the environment variable LD_LIBRARY_PATH to
+/usr/lib64/nvml_debug.
+
+%files -n libvmem-debug
+%defattr(644,root,root,-)
+%dir %{_libdir}/nvml_debug
+%{_libdir}/nvml_debug/libvmem.so
+%{_libdir}/nvml_debug/libvmem.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -272,13 +378,34 @@ applications that want to specifically make use of libvmmalloc.
 
 %files -n libvmmalloc-devel
 %defattr(644,root,root,-)
-%dir %{_libdir}/nvml_debug
 %{_libdir}/libvmmalloc.so
 %{_libdir}/pkgconfig/libvmmalloc.pc
-%{_libdir}/nvml_debug/libvmmalloc.so
-%{_libdir}/nvml_debug/libvmmalloc.so.*
 %{_includedir}/libvmmalloc.h
 %{_mandir}/man3/libvmmalloc.3.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libvmmalloc-debug
+Summary: Debug variant of the Dynamic-to-Persistent allocation library
+Group: Development/Libraries
+Requires: libvmmalloc = %{version}-%{release}
+%description -n libvmmalloc-debug
+The libvmmalloc library transparently converts all the dynamic memory
+allocations into persistent memory allocations. This allows the use
+of persistent memory as volatile memory without modifying the target
+application.
+
+This sub-package contains debug variant of the library, providing
+run-time assertions and trace points. The typical way to access the
+debug version is to set the environment variable LD_LIBRARY_PATH to
+/usr/lib64/nvml_debug.
+
+%files -n libvmmalloc-debug
+%defattr(644,root,root,-)
+%dir %{_libdir}/nvml_debug
+%{_libdir}/nvml_debug/libvmmalloc.so
+%{_libdir}/nvml_debug/libvmmalloc.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -309,13 +436,33 @@ by libpmemlog, libpemblk and libpmemobj libraries.
 
 %files -n libpmempool-devel
 %defattr(644,root,root,-)
-%dir %{_libdir}/nvml_debug
 %{_libdir}/libpmempool.so
 %{_libdir}/pkgconfig/libpmempool.pc
-%{_libdir}/nvml_debug/libpmempool.so
-%{_libdir}/nvml_debug/libpmempool.so.*
 %{_includedir}/libpmempool.h
 %{_mandir}/man3/libpmempool.3.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libpmempool-debug
+Summary: Debug variant of the Persistent Memory pool management library
+Group: Development/Libraries
+Requires: libpmempool = %{version}-%{release}
+%description -n libpmempool-debug
+The libpmempool library provides a set of utilities for off-line administration,
+analysis, diagnostics and repair of persistent memory pools created
+by libpmemlog, libpemblk and libpmemobj libraries.
+
+This sub-package contains debug variant of the library, providing
+run-time assertions and trace points. The typical way to access the
+debug version is to set the environment variable LD_LIBRARY_PATH to
+/usr/lib64/nvml_debug.
+
+%files -n libpmempool-debug
+%defattr(644,root,root,-)
+%dir %{_libdir}/nvml_debug
+%{_libdir}/nvml_debug/libpmempool.so
+%{_libdir}/nvml_debug/libpmempool.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -395,6 +542,9 @@ make check
 
 
 %changelog
+* Mon Jul 11 2016 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.1-2
+- Move debug variants of the libraries to -debug subpackages
+
 * Sun Jun 26 2016 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.1-1
 - NVML 1.1 release
 - Update link to source tarball
