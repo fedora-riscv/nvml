@@ -1,7 +1,7 @@
 
 Name:		nvml
 Version:	1.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Non-Volatile Memory Library
 License:	BSD
 URL:		http://pmem.io/nvml
@@ -103,6 +103,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %package -n libpmemblk
 Summary: Persistent Memory Resident Array of Blocks library
 Group: System Environment/Libraries
+Requires: libpmem >= %{version}-%{release}
 %description -n libpmemblk
 The libpmemblk implements a pmem-resident array of blocks, all the same
 size, where a block is updated atomically with respect to power
@@ -167,6 +168,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %package -n libpmemlog
 Summary: Persistent Memory Resident Log File library
 Group: System Environment/Libraries
+Requires: libpmem >= %{version}-%{release}
 %description -n libpmemlog
 The libpmemlog library provides a pmem-resident log file. This is
 useful for programs like databases that append frequently to a log
@@ -227,6 +229,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %package -n libpmemobj
 Summary: Persistent Memory Transactional Object Store library
 Group: System Environment/Libraries
+Requires: libpmem >= %{version}-%{release}
 %description -n libpmemobj
 The libpmemobj library provides a transactional object store,
 providing memory allocation, transactions, and general facilities for
@@ -413,6 +416,7 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %package -n libpmempool
 Summary: Persistent Memory pool management library
 Group: System Environment/Libraries
+Requires: libpmem >= %{version}-%{release}
 %description -n libpmempool
 The libpmempool library provides a set of utilities for off-line administration,
 analysis, diagnostics and repair of persistent memory pools created
@@ -429,6 +433,7 @@ by libpmemlog, libpemblk and libpmemobj libraries.
 Summary: Development files for Persistent Memory pool management library
 Group: Development/Libraries
 Requires: libpmempool = %{version}-%{release}
+Requires: libpmem-devel = %{version}-%{release}
 %description -n libpmempool-devel
 The libpmempool library provides a set of utilities for off-line administration,
 analysis, diagnostics and repair of persistent memory pools created
@@ -470,6 +475,11 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %package tools
 Summary: Utilities for Persistent Memory
 Group: System Environment/Base
+Requires: libpmem >= %{version}-%{release}
+Requires: libpmemlog >= %{version}-%{release}
+Requires: libpmemblk >= %{version}-%{release}
+Requires: libpmemobj >= %{version}-%{release}
+Requires: libpmempool >= %{version}-%{release}
 %description tools
 Useful applications for administration and diagnosis of persistent memory.
 
@@ -542,6 +552,9 @@ make check
 
 
 %changelog
+* Thu Jul 14 2016 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.1-3
+- Add missing package version requirements
+
 * Mon Jul 11 2016 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.1-2
 - Move debug variants of the libraries to -debug subpackages
 
