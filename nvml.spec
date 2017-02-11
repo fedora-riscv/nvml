@@ -1,7 +1,7 @@
 
 Name:		nvml
 Version:	1.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Non-Volatile Memory Library
 License:	BSD
 URL:		http://pmem.io/nvml
@@ -582,6 +582,9 @@ make check
 
 
 %changelog
+* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Fri Dec 30 2016 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.2-1
 - Update to NVML version 1.2 (RHBZ #1383467)
 - Add libpmemobj C++ bindings
