@@ -1,13 +1,11 @@
 
 Name:		nvml
-Version:	1.2
-Release:	3%{?dist}
+Version:	1.2.1
+Release:	1%{?dist}
 Summary:	Non-Volatile Memory Library
 License:	BSD
 URL:		http://pmem.io/nvml
 Source0:	https://github.com/pmem/%{name}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
-Patch0:		1.2-0001-jemalloc-fix-test-compilation-on-Fedora-rawhide.patch
-Patch1:		1.2-0002-test-fix-cpp-test-compilation-on-Fedora-rawhide.patch
 
 BuildRequires:	glibc-devel
 BuildRequires:	autoconf
@@ -529,8 +527,6 @@ Useful applications for administration and diagnosis of persistent memory.
 
 %prep
 %setup -q -n %{name}-%{version}
-%patch0 -p1
-%patch1 -p1
 
 %build
 # Currently, NVML makefiles do not allow to easily override CFLAGS,
@@ -585,8 +581,11 @@ make check
 
 
 %changelog
+* Thu Mar 16 2017 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.2.1-1
+- Update to NVML version 1.2.1 (RHBZ #1425038)
+
 * Tue Feb 21 2017 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.2-3
-- Fix compilation under gcc 7.0.x (RHBZ #14240004)
+- Fix compilation under gcc 7.0.x (RHBZ #1424004)
 
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
