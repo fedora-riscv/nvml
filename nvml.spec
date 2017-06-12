@@ -1,6 +1,6 @@
 
 Name:		nvml
-Version:	1.2.2
+Version:	1.2.3
 Release:	1%{?dist}
 Summary:	Non-Volatile Memory Library
 License:	BSD
