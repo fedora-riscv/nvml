@@ -1,7 +1,7 @@
 
 Name:		nvml
 Version:	1.2.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Non-Volatile Memory Library
 License:	BSD
 URL:		http://pmem.io/nvml
@@ -581,6 +581,9 @@ make check
 
 
 %changelog
+* Fri Jun 16 2017 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.2.3-2
+- Update to NVML version 1.2.3 (RHBZ #1451741)
+
 * Sat Apr 15 2017 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.2.2-1
 - Update to NVML version 1.2.2 (RHBZ #1436820, RHBZ #1425038)
 
