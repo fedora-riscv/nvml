@@ -1,7 +1,7 @@
 
 Name:		nvml
-Version:	1.2.3
-Release:	2%{?dist}
+Version:	1.3
+Release:	1%{?dist}
 Summary:	Non-Volatile Memory Library
 License:	BSD
 URL:		http://pmem.io/nvml
@@ -13,11 +13,14 @@ BuildRequires:	automake
 BuildRequires:	man
 BuildRequires:	pkgconfig
 BuildRequires:	doxygen
+BuildRequires:	gdb
+
+%define min_libfabric_ver 1.4.2
+BuildRequires:	libfabric-devel >= %{min_libfabric_ver}
 
 
 # Debug variants of the libraries should be filtered out of the provides.
 %global __provides_exclude_from ^%{_libdir}/nvml_debug/.*\\.so.*$
-
 
 # By design, NVML does not support any 32-bit architecture.
 # Due to dependency on xmmintrin.h and some inline assembly, it can be
@@ -498,6 +501,81 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %doc ChangeLog CONTRIBUTING.md README.md
 
 
+%package -n librpmem
+Summary: Remote Access to Persistent Memory library
+Group: System Environment/Libraries
+Requires: libfabric >= %{min_libfabric_ver}
+Requires: openssh-clients
+%description -n librpmem
+The librpmem library provides low-level support for remote access
+to persistent memory utilizing RDMA-capable NICs. It can be used
+to replicate peristent memory regions over RDMA protocol.
+
+%files -n librpmem
+%defattr(-,root,root,-)
+%{_libdir}/librpmem.so.*
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n librpmem-devel
+Summary: Development files for the Remote Access to Persistent Memory library
+Group: Development/Libraries
+Requires: librpmem = %{version}-%{release}
+%description -n librpmem-devel
+The librpmem library provides low-level support for remote access
+to persistent memory utilizing RDMA-capable NICs. It can be used
+to replicate peristent memory regions over RDMA protocol.
+
+This sub-package contains libraries and header files for developing
+applications that want to specifically make use of librpmem.
+
+%files -n librpmem-devel
+%defattr(-,root,root,-)
+%{_libdir}/librpmem.so
+%{_libdir}/pkgconfig/librpmem.pc
+%{_includedir}/librpmem.h
+%{_mandir}/man3/librpmem.3.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n librpmem-debug
+Summary: Debug variant of the Remote Access to Persistent Memory library
+Group: Development/Libraries
+Requires: librpmem = %{version}-%{release}
+%description -n librpmem-debug
+The librpmem library provides low-level support for remote access
+to persistent memory utilizing RDMA-capable NICs. It can be used
+to replicate peristent memory regions over RDMA protocol.
+
+This sub-package contains debug variant of the library, providing
+run-time assertions and trace points. The typical way to access the
+debug version is to set the environment variable LD_LIBRARY_PATH to
+/usr/lib64/nvml_debug.
+
+%files -n librpmem-debug
+%defattr(-,root,root,-)
+%dir %{_libdir}/nvml_debug
+%{_libdir}/nvml_debug/librpmem.so
+%{_libdir}/nvml_debug/librpmem.so.*
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n rpmemd
+Group: System Environment/Base
+Summary: Target node process executed by librpmem
+Requires: libfabric >= %{min_libfabric_ver}
+%description -n rpmemd
+The rpmemd process is executed on a target node by librpmem library
+and facilitates access to persistent memory over RDMA.
+
+%files -n rpmemd
+%{_bindir}/rpmemd
+%{_mandir}/man1/rpmemd.1.gz
+
+
 %package tools
 Summary: Utilities for Persistent Memory
 Group: System Environment/Base
@@ -555,7 +633,8 @@ cp utils/nvml.magic %{buildroot}%{_datadir}/nvml/
 
 
 %check
-cp src/test/testconfig.sh.example src/test/testconfig.sh
+echo "PMEM_FS_DIR=/tmp" > src/test/testconfig.sh
+echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
 make check
 
 
@@ -573,7 +652,8 @@ make check
 %postun -n libvmmalloc -p /sbin/ldconfig
 %post   -n libpmempool -p /sbin/ldconfig
 %postun -n libpmempool -p /sbin/ldconfig
-
+%post   -n librpmem -p /sbin/ldconfig
+%postun -n librpmem -p /sbin/ldconfig
 
 %if 0%{?__debug_package} == 0
 %debug_package
@@ -581,6 +661,11 @@ make check
 
 
 %changelog
+* Mon Jul 17 2017 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.3-1
+- Update to NVML version 1.3 (RHBZ #1451741, RHBZ #1455216)
+- Add librpmem and rpmemd sub-packages
+- Force file system to appear as PMEM for make check
+
 * Fri Jun 16 2017 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.2.3-2
 - Update to NVML version 1.2.3 (RHBZ #1451741)
 
