@@ -1,7 +1,7 @@
 
 Name:		nvml
-Version:	1.3
-Release:	3%{?dist}
+Version:	1.3.1
+Release:	1%{?dist}
 Summary:	Non-Volatile Memory Library
 License:	BSD
 URL:		http://pmem.io/nvml
@@ -661,6 +661,9 @@ make check
 
 
 %changelog
+* Sat Jan 27 2018 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.3.1-1
+- Update to NVML version 1.3.1 (RHBZ #1480578)
+
 * Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
