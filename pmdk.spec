@@ -7,7 +7,7 @@
 #
 
 # do not terminate build if files in the $RPM_BUILD_ROOT
-# directory are not found in the %files (without fabric case)
+# directory are not found in %%files (without fabric case)
 %define _unpackaged_files_terminate_build 0
 
 # disable 'make check' on suse
@@ -30,7 +30,7 @@
 
 Name:		pmdk
 Version:	1.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Persistent Memory Development Kit
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -704,7 +704,7 @@ Requires: libpmemblk >= %{version}-%{release}
 Requires: libpmemobj >= %{version}-%{release}
 Requires: libpmempool >= %{version}-%{release}
 Requires: libpmemcto >= %{version}-%{release}
-Obsoletes: nvml-tools
+Obsoletes: nvml-tools < %{version}-%{release}
 %description -n pmempool
 The pmempool is a standalone utility for management and off-line analysis
 of Persistent Memory pools created by PMDK libraries. It provides a set
@@ -814,6 +814,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Thu Mar 29 2018 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.4-2
+- Fix issues found by rpmlint
+
 * Thu Mar 29 2018 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.4-1
 - Rename NVML project to PMDK
 - Update to PMDK version 1.4 (RHBZ #1480578, #1539562, #1539564)
