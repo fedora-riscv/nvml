@@ -1,12 +1,44 @@
 
-Name:		nvml
-Version:	1.3.1
-Release:	2%{?dist}
-Summary:	Non-Volatile Memory Library
+# rpmbuild options:
+#   --with | --without fabric
+#   --with | --without ndctl
+#   --define "_testconfig <path to custom testconfig.sh or 'default'>"
+#   --define "_check <1|0>" - run make check or not
+#
+
+# do not terminate build if files in the $RPM_BUILD_ROOT
+# directory are not found in the %files (without fabric case)
+%define _unpackaged_files_terminate_build 0
+
+# disable 'make check' on suse
+%if %{defined suse_version}
+	%define _check 0
+	%define dist .suse%{suse_version}
+%endif
+
+%if (0%{?suse_version} > 1315) || (0%{?fedora} >= 27) || (0%{?rhel} >= 7)
+%bcond_without fabric
+%else
+%bcond_with fabric
+%endif
+
+# by default build w/o ndctl, unless explicitly enabled
+%bcond_with ndctl
+
+%define min_libfabric_ver 1.4.2
+%define min_ndctl_ver 59.2
+
+Name:		pmdk
+Version:	1.4
+Release:	1%{?dist}
+Summary:	Persistent Memory Development Kit
 License:	BSD
-URL:		http://pmem.io/nvml
+URL:		http://pmem.io/pmdk
+
 Source0:	https://github.com/pmem/%{name}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
+BuildRequires:	gcc
+BuildRequires:	make
 BuildRequires:	glibc-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -15,29 +47,37 @@ BuildRequires:	pkgconfig
 BuildRequires:	doxygen
 BuildRequires:	gdb
 
-%define min_libfabric_ver 1.4.2
+%if %{with ndctl}
+BuildRequires:	ndctl-devel >= %{min_ndctl_ver}
+BuildRequires:	daxctl-devel >= %{min_ndctl_ver}
+%endif
+
+%if %{with fabric}
 BuildRequires:	libfabric-devel >= %{min_libfabric_ver}
+%endif
 
 
 # Debug variants of the libraries should be filtered out of the provides.
-%global __provides_exclude_from ^%{_libdir}/nvml_debug/.*\\.so.*$
+%global __provides_exclude_from ^%{_libdir}/pmdk_debug/.*\\.so.*$
 
-# By design, NVML does not support any 32-bit architecture.
+# By design, PMDK does not support any 32-bit architecture.
 # Due to dependency on xmmintrin.h and some inline assembly, it can be
 # compiled only for x86_64 at the moment.
 # Other 64-bit architectures could also be supported, if only there is
 # a request for that, and if somebody provides the arch-specific
 # implementation of the low-level routines for flushing to persistent
 # memory.
+
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340634
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340635
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340636
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340637
+
 ExclusiveArch: x86_64
 
 %description
-The NVM Library is a collection of libraries for using memory-mapped
-persistence, optimized specifically for persistent memory.
+The Persistent Memory Development Kit is a collection of libraries for
+using memory-mapped persistence, optimized specifically for persistent memory.
 
 
 %package -n libpmem
@@ -50,9 +90,9 @@ to pmem is provided.
 
 %files -n libpmem
 %defattr(-,root,root,-)
-%dir %{_datadir}/nvml
+%dir %{_datadir}/pmdk
 %{_libdir}/libpmem.so.*
-%{_datadir}/nvml/nvml.magic
+%{_datadir}/pmdk/pmdk.magic
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -76,7 +116,8 @@ convenient.
 %{_libdir}/libpmem.so
 %{_libdir}/pkgconfig/libpmem.pc
 %{_includedir}/libpmem.h
-%{_mandir}/man3/libpmem.3.gz
+%{_mandir}/man7/libpmem.7.gz
+%{_mandir}/man3/pmem_*.3.gz
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -93,13 +134,13 @@ to pmem is provided.
 This sub-package contains debug variant of the library, providing
 run-time assertions and trace points. The typical way to access the
 debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/nvml_debug.
+/usr/lib64/pmdk_debug.
 
 %files -n libpmem-debug
 %defattr(-,root,root,-)
-%dir %{_libdir}/nvml_debug
-%{_libdir}/nvml_debug/libpmem.so
-%{_libdir}/nvml_debug/libpmem.so.*
+%dir %{_libdir}/pmdk_debug
+%{_libdir}/pmdk_debug/libpmem.so
+%{_libdir}/pmdk_debug/libpmem.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -141,7 +182,9 @@ more generally useful.
 %{_libdir}/libpmemblk.so
 %{_libdir}/pkgconfig/libpmemblk.pc
 %{_includedir}/libpmemblk.h
-%{_mandir}/man3/libpmemblk.3.gz
+%{_mandir}/man7/libpmemblk.7.gz
+%{_mandir}/man5/poolset.5.gz
+%{_mandir}/man3/pmemblk_*.3.gz
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -158,13 +201,13 @@ failure or program interruption (no torn blocks).
 This sub-package contains debug variant of the library, providing
 run-time assertions and trace points. The typical way to access the
 debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/nvml_debug.
+/usr/lib64/pmdk_debug.
 
 %files -n libpmemblk-debug
 %defattr(-,root,root,-)
-%dir %{_libdir}/nvml_debug
-%{_libdir}/nvml_debug/libpmemblk.so
-%{_libdir}/nvml_debug/libpmemblk.so.*
+%dir %{_libdir}/pmdk_debug
+%{_libdir}/pmdk_debug/libpmemblk.so
+%{_libdir}/pmdk_debug/libpmemblk.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -201,7 +244,9 @@ level libraries like libpmemobj to be more generally useful.
 %{_libdir}/libpmemlog.so
 %{_libdir}/pkgconfig/libpmemlog.pc
 %{_includedir}/libpmemlog.h
-%{_mandir}/man3/libpmemlog.3.gz
+%{_mandir}/man7/libpmemlog.7.gz
+%{_mandir}/man5/poolset.5.gz
+%{_mandir}/man3/pmemlog_*.3.gz
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -219,13 +264,13 @@ level libraries like libpmemobj to be more generally useful.
 This sub-package contains debug variant of the library, providing
 run-time assertions and trace points. The typical way to access the
 debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/nvml_debug.
+/usr/lib64/pmdk_debug.
 
 %files -n libpmemlog-debug
 %defattr(-,root,root,-)
-%dir %{_libdir}/nvml_debug
-%{_libdir}/nvml_debug/libpmemlog.so
-%{_libdir}/nvml_debug/libpmemlog.so.*
+%dir %{_libdir}/pmdk_debug
+%{_libdir}/pmdk_debug/libpmemlog.so
+%{_libdir}/pmdk_debug/libpmemlog.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -263,7 +308,15 @@ probably want to start with this library.
 %{_libdir}/pkgconfig/libpmemobj.pc
 %{_includedir}/libpmemobj.h
 %{_includedir}/libpmemobj/*.h
-%{_mandir}/man3/libpmemobj.3.gz
+%{_mandir}/man7/libpmemobj.7.gz
+%{_mandir}/man5/poolset.5.gz
+%{_mandir}/man3/pmemobj_*.3.gz
+%{_mandir}/man3/pobj_*.3.gz
+%{_mandir}/man3/oid_*.3.gz
+%{_mandir}/man3/toid*.3.gz
+%{_mandir}/man3/direct_*.3.gz
+%{_mandir}/man3/d_r*.3.gz
+%{_mandir}/man3/tx_*.3.gz
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -281,13 +334,13 @@ probably want to start with this library.
 This sub-package contains debug variant of the library, providing
 run-time assertions and trace points. The typical way to access the
 debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/nvml_debug.
+/usr/lib64/pmdk_debug.
 
 %files -n libpmemobj-debug
 %defattr(-,root,root,-)
-%dir %{_libdir}/nvml_debug
-%{_libdir}/nvml_debug/libpmemobj.so
-%{_libdir}/nvml_debug/libpmemobj.so.*
+%dir %{_libdir}/pmdk_debug
+%{_libdir}/pmdk_debug/libpmemobj.so
+%{_libdir}/pmdk_debug/libpmemobj.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -324,7 +377,8 @@ applications that want to make use of libvmem.
 %{_libdir}/libvmem.so
 %{_libdir}/pkgconfig/libvmem.pc
 %{_includedir}/libvmem.h
-%{_mandir}/man3/libvmem.3.gz
+%{_mandir}/man7/libvmem.7.gz
+%{_mandir}/man3/vmem_*.3.gz
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -341,13 +395,13 @@ its own malloc-style API.
 This sub-package contains debug variant of the library, providing
 run-time assertions and trace points. The typical way to access the
 debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/nvml_debug.
+/usr/lib64/pmdk_debug.
 
 %files -n libvmem-debug
 %defattr(-,root,root,-)
-%dir %{_libdir}/nvml_debug
-%{_libdir}/nvml_debug/libvmem.so
-%{_libdir}/nvml_debug/libvmem.so.*
+%dir %{_libdir}/pmdk_debug
+%{_libdir}/pmdk_debug/libvmem.so
+%{_libdir}/pmdk_debug/libvmem.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -389,7 +443,7 @@ applications that want to specifically make use of libvmmalloc.
 %{_libdir}/libvmmalloc.so
 %{_libdir}/pkgconfig/libvmmalloc.pc
 %{_includedir}/libvmmalloc.h
-%{_mandir}/man3/libvmmalloc.3.gz
+%{_mandir}/man7/libvmmalloc.7.gz
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -407,13 +461,13 @@ application.
 This sub-package contains debug variant of the library, providing
 run-time assertions and trace points. The typical way to access the
 debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/nvml_debug.
+/usr/lib64/pmdk_debug.
 
 %files -n libvmmalloc-debug
 %defattr(-,root,root,-)
-%dir %{_libdir}/nvml_debug
-%{_libdir}/nvml_debug/libvmmalloc.so
-%{_libdir}/nvml_debug/libvmmalloc.so.*
+%dir %{_libdir}/pmdk_debug
+%{_libdir}/pmdk_debug/libvmmalloc.so
+%{_libdir}/pmdk_debug/libvmmalloc.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -473,7 +527,9 @@ pools created by libpmemlog, libpemblk and libpmemobj libraries.
 %{_libdir}/libpmempool.so
 %{_libdir}/pkgconfig/libpmempool.pc
 %{_includedir}/libpmempool.h
-%{_mandir}/man3/libpmempool.3.gz
+%{_mandir}/man7/libpmempool.7.gz
+%{_mandir}/man5/poolset.5.gz
+%{_mandir}/man3/pmempool_*.3.gz
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -490,16 +546,18 @@ pools created by libpmemlog, libpemblk and libpmemobj libraries.
 This sub-package contains debug variant of the library, providing
 run-time assertions and trace points. The typical way to access the
 debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/nvml_debug.
+/usr/lib64/pmdk_debug.
 
 %files -n libpmempool-debug
 %defattr(-,root,root,-)
-%dir %{_libdir}/nvml_debug
-%{_libdir}/nvml_debug/libpmempool.so
-%{_libdir}/nvml_debug/libpmempool.so.*
+%dir %{_libdir}/pmdk_debug
+%{_libdir}/pmdk_debug/libpmempool.so
+%{_libdir}/pmdk_debug/libpmempool.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
+
+%if %{with fabric}
 
 %package -n librpmem
 Summary: Remote Access to Persistent Memory library
@@ -535,7 +593,8 @@ applications that want to specifically make use of librpmem.
 %{_libdir}/librpmem.so
 %{_libdir}/pkgconfig/librpmem.pc
 %{_includedir}/librpmem.h
-%{_mandir}/man3/librpmem.3.gz
+%{_mandir}/man7/librpmem.7.gz
+%{_mandir}/man3/rpmem_*.3.gz
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -552,13 +611,13 @@ to replicate peristent memory regions over RDMA protocol.
 This sub-package contains debug variant of the library, providing
 run-time assertions and trace points. The typical way to access the
 debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/nvml_debug.
+/usr/lib64/pmdk_debug.
 
 %files -n librpmem-debug
 %defattr(-,root,root,-)
-%dir %{_libdir}/nvml_debug
-%{_libdir}/nvml_debug/librpmem.so
-%{_libdir}/nvml_debug/librpmem.so.*
+%dir %{_libdir}/pmdk_debug
+%{_libdir}/pmdk_debug/librpmem.so
+%{_libdir}/pmdk_debug/librpmem.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -575,8 +634,68 @@ and facilitates access to persistent memory over RDMA.
 %{_bindir}/rpmemd
 %{_mandir}/man1/rpmemd.1.gz
 
+%endif # _with_fabric
 
-%package tools
+
+%package -n libpmemcto
+Summary: Close-to-Open Persistence library
+Group: System Environment/Libraries
+Requires: libpmem >= %{version}-%{release}
+%description -n libpmemcto
+The libpmemcto library is a Persistent Memory allocator with no overhead
+imposed by run-time flushing or transactional updates.
+
+%files -n libpmemcto
+%defattr(-,root,root,-)
+%{_libdir}/libpmemcto.so.*
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libpmemcto-devel
+Summary: Development files for Close-to-Open Persistence library
+Group: Development/Libraries
+Requires: libpmemcto = %{version}-%{release}
+Requires: libpmem-devel = %{version}-%{release}
+%description -n libpmemcto-devel
+The libpmemcto library is a Persistent Memory allocator with no overhead
+imposed by run-time flushing or transactional updates.
+
+%files -n libpmemcto-devel
+%defattr(-,root,root,-)
+%{_libdir}/libpmemcto.so
+%{_libdir}/pkgconfig/libpmemcto.pc
+%{_includedir}/libpmemcto.h
+%{_mandir}/man7/libpmemcto.7.gz
+%{_mandir}/man5/poolset.5.gz
+%{_mandir}/man3/pmemcto*.3.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libpmemcto-debug
+Summary: Debug variant of the Close-to-Open Persistence library
+Group: Development/Libraries
+Requires: libpmemcto = %{version}-%{release}
+%description -n libpmemcto-debug
+The libpmemcto library is a Persistent Memory allocator with no overhead
+imposed by run-time flushing or transactional updates.
+
+This sub-package contains debug variant of the library, providing
+run-time assertions and trace points. The typical way to access the
+debug version is to set the environment variable LD_LIBRARY_PATH to
+/usr/lib64/pmdk_debug.
+
+%files -n libpmemcto-debug
+%defattr(-,root,root,-)
+%dir %{_libdir}/pmdk_debug
+%{_libdir}/pmdk_debug/libpmemcto.so
+%{_libdir}/pmdk_debug/libpmemcto.so.*
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n pmempool
 Summary: Utilities for Persistent Memory
 Group: System Environment/Base
 Requires: libpmem >= %{version}-%{release}
@@ -584,36 +703,57 @@ Requires: libpmemlog >= %{version}-%{release}
 Requires: libpmemblk >= %{version}-%{release}
 Requires: libpmemobj >= %{version}-%{release}
 Requires: libpmempool >= %{version}-%{release}
-%description tools
-Useful applications for administration and diagnosis of persistent memory.
+Requires: libpmemcto >= %{version}-%{release}
+Obsoletes: nvml-tools
+%description -n pmempool
+The pmempool is a standalone utility for management and off-line analysis
+of Persistent Memory pools created by PMDK libraries. It provides a set
+of utilities for administration and diagnostics of Persistent Memory pools.
+The pmempool may be useful for troubleshooting by system administrators
+and users of the applications based on PMDK libraries.
 
-%files tools
+%files -n pmempool
 %{_bindir}/pmempool
 %{_mandir}/man1/pmempool.1.gz
-%{_mandir}/man1/pmempool-check.1.gz
-%{_mandir}/man1/pmempool-convert.1.gz
-%{_mandir}/man1/pmempool-create.1.gz
-%{_mandir}/man1/pmempool-dump.1.gz
-%{_mandir}/man1/pmempool-info.1.gz
-%{_mandir}/man1/pmempool-rm.1.gz
-%{_mandir}/man1/pmempool-sync.1.gz
-%{_mandir}/man1/pmempool-transform.1.gz
+%{_mandir}/man1/pmempool-*.1.gz
 %config(noreplace) %{_sysconfdir}/bash_completion.d/pmempool.sh
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
 
+%if %{with ndctl}
+
+%package -n daxio
+Summary: Perform I/O on Device DAX devices or zero a Device DAX device
+Group: System Environment/Base
+Requires: libpmem >= %{version}-%{release}
+%description -n daxio
+The daxio utility performs I/O on Device DAX devices or zero
+a Device DAX device.  Since the standard I/O APIs (read/write) cannot be used
+with Device DAX, data transfer is performed on a memory-mapped device.
+The daxio may be used to dump Device DAX data to a file, restore data from
+a backup copy, move/copy data to another device or to erase data from
+a device.
+
+%files -n daxio
+%{_bindir}/daxio
+%{_mandir}/man1/daxio.1.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+%endif # _with_ndctl
+
+
 %prep
 %setup -q -n %{name}-%{version}
 
+
 %build
-# Currently, NVML makefiles do not allow to easily override CFLAGS,
-# so the build flags are passed via EXTRA_CFLAGS.  For debug build
-# selected flags are overriden to disable compiler optimizations.
-EXTRA_CFLAGS_RELEASE="%{optflags}" \
-EXTRA_CFLAGS_DEBUG="%{optflags} -Wp,-U_FORTIFY_SOURCE -O0" \
-EXTRA_CXXFLAGS="%{optflags}" \
-make %{?_smp_mflags}
+# For debug build default flags may be overriden to disable compiler
+# optimizations.
+CFLAGS="%{optflags}" \
+LDFLAGS="%{?__global_ldflags}" \
+make %{?_smp_mflags} NORPATH=1
 
 
 # Override LIB_AR with empty string to skip installation of static libraries
@@ -628,15 +768,23 @@ make install DESTDIR=%{buildroot} \
 	sysconfdir=%{_sysconfdir} \
 	docdir=%{_docdir} \
 	CPP_DOC_DIR=libpmemobj++-devel
-mkdir -p %{buildroot}%{_datadir}/nvml
-cp utils/nvml.magic %{buildroot}%{_datadir}/nvml/
+mkdir -p %{buildroot}%{_datadir}/pmdk
+cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
+
 
 
 %check
-echo "PMEM_FS_DIR=/tmp" > src/test/testconfig.sh
-echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
-make check
-
+%if "%{_check}" == "1"
+	%if "%{_testconfig}" != "default"
+		cp %{_testconfig} src/test/testconfig.sh
+	%else
+		echo "PMEM_FS_DIR=/tmp" > src/test/testconfig.sh
+		echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
+	%endif
+	make check
+%else
+	echo "Check skipped"
+%endif
 
 %post   -n libpmem -p /sbin/ldconfig
 %postun -n libpmem -p /sbin/ldconfig
@@ -652,8 +800,13 @@ make check
 %postun -n libvmmalloc -p /sbin/ldconfig
 %post   -n libpmempool -p /sbin/ldconfig
 %postun -n libpmempool -p /sbin/ldconfig
+%post   -n libpmemcto -p /sbin/ldconfig
+%postun -n libpmemcto -p /sbin/ldconfig
+
+%if %{with fabric}
 %post   -n librpmem -p /sbin/ldconfig
 %postun -n librpmem -p /sbin/ldconfig
+%endif
 
 %if 0%{?__debug_package} == 0
 %debug_package
@@ -661,6 +814,10 @@ make check
 
 
 %changelog
+* Thu Mar 29 2018 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.4-1
+- Rename NVML project to PMDK
+- Update to PMDK version 1.4 (RHBZ #1480578, #1539562, #1539564)
+
 * Thu Feb 08 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
