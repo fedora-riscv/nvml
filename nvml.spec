@@ -2,9 +2,7 @@
 # rpmbuild options:
 #   --with | --without fabric
 #   --with | --without ndctl
-#   --define "_testconfig <path to custom testconfig.sh or 'default'>"
-#   --define "_check <1|0>" - run make check or not
-#
+#   --define _testconfig <path to custom testconfig.sh>
 
 # do not terminate build if files in the $RPM_BUILD_ROOT
 # directory are not found in %%files (without fabric case)
@@ -12,7 +10,7 @@
 
 # disable 'make check' on suse
 %if %{defined suse_version}
-	%define _check 0
+	%define _skip_check 1
 	%define dist .suse%{suse_version}
 %endif
 
@@ -28,10 +26,10 @@
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 59.2
 
-Name:		pmdk
+Name:		nvml
 Version:	1.4
-Release:	2%{?dist}
-Summary:	Persistent Memory Development Kit
+Release:	3%{?dist}
+Summary:	Persistent Memory Development Kit (former NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
 
@@ -774,16 +772,16 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %check
-%if "%{_check}" == "1"
-	%if "%{_testconfig}" != "default"
+%if 0%{?_skip_check} == 1
+	echo "Check skipped"
+%else
+	%if %{defined _testconfig}
 		cp %{_testconfig} src/test/testconfig.sh
 	%else
 		echo "PMEM_FS_DIR=/tmp" > src/test/testconfig.sh
 		echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
 	%endif
 	make check
-%else
-	echo "Check skipped"
 %endif
 
 %post   -n libpmem -p /sbin/ldconfig
@@ -814,6 +812,10 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Mar 30 2018 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.4-3
+- Revert package name change
+- Re-enable check
+
 * Thu Mar 29 2018 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.4-2
 - Fix issues found by rpmlint
 
