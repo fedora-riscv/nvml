@@ -28,7 +28,7 @@
 
 Name:		nvml
 Version:	1.4
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Persistent Memory Development Kit (former NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -784,6 +784,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.4-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Fri Mar 30 2018 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.4-3
 - Revert package name change
 - Re-enable check
