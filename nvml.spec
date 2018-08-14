@@ -716,7 +716,7 @@ a device.
 
 
 %prep
-%setup -q -n %{name}-%{upstreamversion}
+%setup -q -n pmdk-%{upstreamversion}
 
 
 %build
