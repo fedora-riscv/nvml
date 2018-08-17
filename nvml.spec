@@ -25,11 +25,11 @@
 
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.4.2-rc1
+%define upstreamversion 1.4.2
 
 Name:		nvml
 Version:	1.4.2
-Release:	0.2.rc1%{?dist}
+Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -785,6 +785,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Aug 17 2018 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.4.2-1
+- Update to PMDK version 1.4.2 (RHBZ #1589406)
+
 * Tue Aug 14 2018 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.4.2-0.2.rc1
 - Revert package name change
 
