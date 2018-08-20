@@ -20,20 +20,21 @@
 %bcond_with fabric
 %endif
 
-# by default build w/o ndctl, unless explicitly enabled
-%bcond_with ndctl
+# by default build with ndctl, unless explicitly disabled
+%bcond_without ndctl
 
 %define min_libfabric_ver 1.4.2
-%define min_ndctl_ver 59.2
+%define min_ndctl_ver 60.1
+%define upstreamversion 1.4.2
 
 Name:		nvml
-Version:	1.4
-Release:	3%{?dist}
-Summary:	Persistent Memory Development Kit (former NVML)
+Version:	1.4.2
+Release:	1%{?dist}
+Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
 
-Source0:	https://github.com/pmem/%{name}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:	https://github.com/pmem/%{name}/archive/%{upstreamversion}.tar.gz#/%{name}-%{upstreamversion}.tar.gz
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -714,7 +715,7 @@ and users of the applications based on PMDK libraries.
 %{_bindir}/pmempool
 %{_mandir}/man1/pmempool.1.gz
 %{_mandir}/man1/pmempool-*.1.gz
-%config(noreplace) %{_sysconfdir}/bash_completion.d/pmempool.sh
+%config(noreplace) %{_sysconfdir}/bash_completion.d/pmempool
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -743,7 +744,7 @@ a device.
 
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q -n pmdk-%{upstreamversion}
 
 
 %build
@@ -812,6 +813,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Mon Aug 20 2018 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.4.2-1
+- Update to PMDK version 1.4.2 (RHBZ #1589406)
+
 * Fri Mar 30 2018 Krzysztof Czurylo <krzysztof.czurylo@intel.com> - 1.4-3
 - Revert package name change
 - Re-enable check
