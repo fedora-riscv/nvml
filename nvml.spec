@@ -23,12 +23,16 @@
 # by default build with ndctl, unless explicitly disabled
 %bcond_without ndctl
 
+# by default build without pmemcheck, unless explicitly enabled
+# pmemcheck is not packaged by Fedora
+%bcond_with pmemcheck
+
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.4.2
+%define upstreamversion 1.5
 
 Name:		nvml
-Version:	1.4.2
+Version:	1.5
 Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
@@ -43,8 +47,8 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	man
 BuildRequires:	pkgconfig
-BuildRequires:	doxygen
 BuildRequires:	gdb
+BuildRequires:	bc
 
 %if %{with ndctl}
 BuildRequires:	ndctl-devel >= %{min_ndctl_ver}
@@ -453,29 +457,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %doc ChangeLog CONTRIBUTING.md README.md
 
 
-# Specify a virtual Provide for libpmemobj++-static package, so the package
-# usage can be tracked.
-%package -n libpmemobj++-devel
-Summary: C++ bindings for Persistent Memory Transactional Object Store library
-Group: Development/Libraries
-Provides: libpmemobj++-static = %{version}-%{release}
-Requires: libpmemobj-devel = %{version}-%{release}
-%description -n libpmemobj++-devel
-The libpmemobj library provides a transactional object store,
-providing memory allocation, transactions, and general facilities for
-persistent memory programming.
-
-This sub-package contains header files for libpmemobj C++ bindings.
-
-%files -n libpmemobj++-devel
-%{_libdir}/pkgconfig/libpmemobj++.pc
-%{_includedir}/libpmemobj++/*.hpp
-%{_includedir}/libpmemobj++/detail/*.hpp
-%{_docdir}/libpmemobj++-devel/*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
 %package -n libpmempool
 Summary: Persistent Memory pool management library
 Group: System Environment/Libraries
@@ -544,7 +525,7 @@ Requires: openssh-clients
 %description -n librpmem
 The librpmem library provides low-level support for remote access
 to persistent memory utilizing RDMA-capable NICs. It can be used
-to replicate peristent memory regions over RDMA protocol.
+to replicate persistent memory regions over RDMA protocol.
 
 %files -n librpmem
 %{_libdir}/librpmem.so.*
@@ -559,7 +540,7 @@ Requires: librpmem = %{version}-%{release}
 %description -n librpmem-devel
 The librpmem library provides low-level support for remote access
 to persistent memory utilizing RDMA-capable NICs. It can be used
-to replicate peristent memory regions over RDMA protocol.
+to replicate persistent memory regions over RDMA protocol.
 
 This sub-package contains libraries and header files for developing
 applications that want to specifically make use of librpmem.
@@ -581,7 +562,7 @@ Requires: librpmem = %{version}-%{release}
 %description -n librpmem-debug
 The librpmem library provides low-level support for remote access
 to persistent memory utilizing RDMA-capable NICs. It can be used
-to replicate peristent memory regions over RDMA protocol.
+to replicate persistent memory regions over RDMA protocol.
 
 This sub-package contains debug variant of the library, providing
 run-time assertions and trace points. The typical way to access the
@@ -611,61 +592,6 @@ and facilitates access to persistent memory over RDMA.
 %endif # _with_fabric
 
 
-%package -n libpmemcto
-Summary: Close-to-Open Persistence library
-Group: System Environment/Libraries
-Requires: libpmem >= %{version}-%{release}
-%description -n libpmemcto
-The libpmemcto library is a Persistent Memory allocator with no overhead
-imposed by run-time flushing or transactional updates.
-
-%files -n libpmemcto
-%{_libdir}/libpmemcto.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libpmemcto-devel
-Summary: Development files for Close-to-Open Persistence library
-Group: Development/Libraries
-Requires: libpmemcto = %{version}-%{release}
-Requires: libpmem-devel = %{version}-%{release}
-%description -n libpmemcto-devel
-The libpmemcto library is a Persistent Memory allocator with no overhead
-imposed by run-time flushing or transactional updates.
-
-%files -n libpmemcto-devel
-%{_libdir}/libpmemcto.so
-%{_libdir}/pkgconfig/libpmemcto.pc
-%{_includedir}/libpmemcto.h
-%{_mandir}/man7/libpmemcto.7.gz
-%{_mandir}/man5/poolset.5.gz
-%{_mandir}/man3/pmemcto*.3.gz
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libpmemcto-debug
-Summary: Debug variant of the Close-to-Open Persistence library
-Group: Development/Libraries
-Requires: libpmemcto = %{version}-%{release}
-%description -n libpmemcto-debug
-The libpmemcto library is a Persistent Memory allocator with no overhead
-imposed by run-time flushing or transactional updates.
-
-This sub-package contains debug variant of the library, providing
-run-time assertions and trace points. The typical way to access the
-debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/pmdk_debug.
-
-%files -n libpmemcto-debug
-%dir %{_libdir}/pmdk_debug
-%{_libdir}/pmdk_debug/libpmemcto.so
-%{_libdir}/pmdk_debug/libpmemcto.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
 %package -n pmempool
 Summary: Utilities for Persistent Memory
 Group: System Environment/Base
@@ -674,7 +600,6 @@ Requires: libpmemlog >= %{version}-%{release}
 Requires: libpmemblk >= %{version}-%{release}
 Requires: libpmemobj >= %{version}-%{release}
 Requires: libpmempool >= %{version}-%{release}
-Requires: libpmemcto >= %{version}-%{release}
 Obsoletes: nvml-tools < %{version}-%{release}
 %description -n pmempool
 The pmempool is a standalone utility for management and off-line analysis
@@ -714,6 +639,26 @@ a device.
 
 %endif # _with_ndctl
 
+%if %{with pmemcheck}
+%package -n pmreorder
+Summary: Consistency Checker for Persistent Memory
+Group: System Environment/Base
+Requires: python3
+%description -n pmreorder
+The pmreorder tool is a collection of python scripts designed to parse
+and replay operations logged by pmemcheck - a persistent memory checking tool.
+Pmreorder performs the store reordering between persistent memory barriers -
+a sequence of flush-fence operations. It uses a consistency checking routine
+provided in the command line options to check whether files are in a consistent state.
+
+%files -n pmreorder
+%{_bindir}/pmreorder
+%{_datadir}/pmreorder/*.py
+%{_mandir}/man1/pmreorder.1.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+%endif # _with_pmemcheck
 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
@@ -737,8 +682,7 @@ make install DESTDIR=%{buildroot} \
 	mandir=%{_mandir} \
 	bindir=%{_bindir} \
 	sysconfdir=%{_sysconfdir} \
-	docdir=%{_docdir} \
-	CPP_DOC_DIR=libpmemobj++-devel
+	docdir=%{_docdir}
 mkdir -p %{buildroot}%{_datadir}/pmdk
 cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
@@ -753,6 +697,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 	%else
 		echo "PMEM_FS_DIR=/tmp" > src/test/testconfig.sh
 		echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
+		echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
 	%endif
 	make check
 %endif
@@ -771,8 +716,6 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 %postun -n libvmmalloc -p /sbin/ldconfig
 %post   -n libpmempool -p /sbin/ldconfig
 %postun -n libpmempool -p /sbin/ldconfig
-%post   -n libpmemcto -p /sbin/ldconfig
-%postun -n libpmemcto -p /sbin/ldconfig
 
 %if %{with fabric}
 %post   -n librpmem -p /sbin/ldconfig
@@ -785,6 +728,11 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Nov 6 2018 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.5-1
+- Update to PMDK version 1.5
+  libpmemobj C++ bindings moved to separate package (RHBZ #1647145)
+  pmempool convert is now a thin wrapper around pmdk-convert (RHBZ #1647147)
+
 * Fri Aug 17 2018 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.4.2-1
 - Update to PMDK version 1.4.2 (RHBZ #1589406)
 
