@@ -85,7 +85,6 @@ using memory-mapped persistence, optimized specifically for persistent memory.
 
 %package -n libpmem
 Summary: Low-level persistent memory support library
-Group: System Environment/Libraries
 %description -n libpmem
 The libpmem provides low level persistent memory support. In particular,
 support for the persistent memory instructions for flushing changes
@@ -101,7 +100,6 @@ to pmem is provided.
 
 %package -n libpmem-devel
 Summary: Development files for the low-level persistent memory library
-Group: Development/Libraries
 Requires: libpmem = %{version}-%{release}
 %description -n libpmem-devel
 The libpmem provides low level persistent memory support. In particular,
@@ -125,7 +123,6 @@ convenient.
 
 %package -n libpmem-debug
 Summary: Debug variant of the low-level persistent memory library
-Group: Development/Libraries
 Requires: libpmem = %{version}-%{release}
 %description -n libpmem-debug
 The libpmem provides low level persistent memory support. In particular,
@@ -147,7 +144,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 
 %package -n libpmemblk
 Summary: Persistent Memory Resident Array of Blocks library
-Group: System Environment/Libraries
 Requires: libpmem >= %{version}-%{release}
 %description -n libpmemblk
 The libpmemblk implements a pmem-resident array of blocks, all the same
@@ -162,7 +158,6 @@ failure or program interruption (no torn blocks).
 
 %package -n libpmemblk-devel
 Summary: Development files for the Persistent Memory Resident Array of Blocks library
-Group: Development/Libraries
 Requires: libpmemblk = %{version}-%{release}
 Requires: libpmem-devel = %{version}-%{release}
 %description -n libpmemblk-devel
@@ -189,7 +184,6 @@ more generally useful.
 
 %package -n libpmemblk-debug
 Summary: Debug variant of the Persistent Memory Resident Array of Blocks library
-Group: Development/Libraries
 Requires: libpmemblk = %{version}-%{release}
 %description -n libpmemblk-debug
 The libpmemblk implements a pmem-resident array of blocks, all the same
@@ -211,7 +205,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 
 %package -n libpmemlog
 Summary: Persistent Memory Resident Log File library
-Group: System Environment/Libraries
 Requires: libpmem >= %{version}-%{release}
 %description -n libpmemlog
 The libpmemlog library provides a pmem-resident log file. This is
@@ -226,7 +219,6 @@ file.
 
 %package -n libpmemlog-devel
 Summary: Development files for the Persistent Memory Resident Log File library
-Group: Development/Libraries
 Requires: libpmemlog = %{version}-%{release}
 Requires: libpmem-devel = %{version}-%{release}
 %description -n libpmemlog-devel
@@ -248,7 +240,6 @@ level libraries like libpmemobj to be more generally useful.
 
 %package -n libpmemlog-debug
 Summary: Debug variant of the Persistent Memory Resident Log File library
-Group: Development/Libraries
 Requires: libpmemlog = %{version}-%{release}
 %description -n libpmemlog-debug
 The libpmemlog library provides a pmem-resident log file. This
@@ -271,7 +262,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 
 %package -n libpmemobj
 Summary: Persistent Memory Transactional Object Store library
-Group: System Environment/Libraries
 Requires: libpmem >= %{version}-%{release}
 %description -n libpmemobj
 The libpmemobj library provides a transactional object store,
@@ -286,7 +276,6 @@ persistent memory programming.
 
 %package -n libpmemobj-devel
 Summary: Development files for the Persistent Memory Transactional Object Store library
-Group: Development/Libraries
 Requires: libpmemobj = %{version}-%{release}
 Requires: libpmem-devel = %{version}-%{release}
 %description -n libpmemobj-devel
@@ -315,7 +304,6 @@ probably want to start with this library.
 
 %package -n libpmemobj-debug
 Summary: Debug variant of the Persistent Memory Transactional Object Store library
-Group: Development/Libraries
 Requires: libpmemobj = %{version}-%{release}
 %description -n libpmemobj-debug
 The libpmemobj library provides a transactional object store,
@@ -338,7 +326,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 
 %package -n libvmem
 Summary: Volatile Memory allocation library
-Group: System Environment/Libraries
 %description -n libvmem
 The libvmem library turns a pool of persistent memory into a volatile
 memory pool, similar to the system heap but kept separate and with
@@ -352,7 +339,6 @@ its own malloc-style API.
 
 %package -n libvmem-devel
 Summary: Development files for the Volatile Memory allocation library
-Group: Development/Libraries
 Requires: libvmem = %{version}-%{release}
 %description -n libvmem-devel
 The libvmem library turns a pool of persistent memory into a volatile
@@ -374,7 +360,6 @@ applications that want to make use of libvmem.
 
 %package -n libvmem-debug
 Summary: Debug variant of the Volatile Memory allocation library
-Group: Development/Libraries
 Requires: libvmem = %{version}-%{release}
 %description -n libvmem-debug
 The libvmem library turns a pool of persistent memory into a volatile
@@ -396,7 +381,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 
 %package -n libvmmalloc
 Summary: Dynamic to Persistent Memory allocation translation library
-Group: System Environment/Libraries
 %description -n libvmmalloc
 The libvmmalloc library transparently converts all the dynamic memory
 allocations into persistent memory allocations. This allows the use
@@ -414,7 +398,6 @@ environment variable.
 
 %package -n libvmmalloc-devel
 Summary: Development files for the Dynamic-to-Persistent allocation library
-Group: Development/Libraries
 Requires: libvmmalloc = %{version}-%{release}
 %description -n libvmmalloc-devel
 The libvmmalloc library transparently converts all the dynamic memory
@@ -436,7 +419,6 @@ applications that want to specifically make use of libvmmalloc.
 
 %package -n libvmmalloc-debug
 Summary: Debug variant of the Dynamic-to-Persistent allocation library
-Group: Development/Libraries
 Requires: libvmmalloc = %{version}-%{release}
 %description -n libvmmalloc-debug
 The libvmmalloc library transparently converts all the dynamic memory
@@ -459,7 +441,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 
 %package -n libpmempool
 Summary: Persistent Memory pool management library
-Group: System Environment/Libraries
 Requires: libpmem >= %{version}-%{release}
 %description -n libpmempool
 The libpmempool library provides a set of utilities for off-line
@@ -474,7 +455,6 @@ pools created by libpmemlog, libpemblk and libpmemobj libraries.
 
 %package -n libpmempool-devel
 Summary: Development files for Persistent Memory pool management library
-Group: Development/Libraries
 Requires: libpmempool = %{version}-%{release}
 Requires: libpmem-devel = %{version}-%{release}
 %description -n libpmempool-devel
@@ -495,7 +475,6 @@ pools created by libpmemlog, libpemblk and libpmemobj libraries.
 
 %package -n libpmempool-debug
 Summary: Debug variant of the Persistent Memory pool management library
-Group: Development/Libraries
 Requires: libpmempool = %{version}-%{release}
 %description -n libpmempool-debug
 The libpmempool library provides a set of utilities for off-line
@@ -519,7 +498,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 
 %package -n librpmem
 Summary: Remote Access to Persistent Memory library
-Group: System Environment/Libraries
 Requires: libfabric >= %{min_libfabric_ver}
 Requires: openssh-clients
 %description -n librpmem
@@ -535,7 +513,6 @@ to replicate persistent memory regions over RDMA protocol.
 
 %package -n librpmem-devel
 Summary: Development files for the Remote Access to Persistent Memory library
-Group: Development/Libraries
 Requires: librpmem = %{version}-%{release}
 %description -n librpmem-devel
 The librpmem library provides low-level support for remote access
@@ -557,7 +534,6 @@ applications that want to specifically make use of librpmem.
 
 %package -n librpmem-debug
 Summary: Debug variant of the Remote Access to Persistent Memory library
-Group: Development/Libraries
 Requires: librpmem = %{version}-%{release}
 %description -n librpmem-debug
 The librpmem library provides low-level support for remote access
@@ -578,7 +554,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 
 
 %package -n rpmemd
-Group: System Environment/Base
 Summary: Target node process executed by librpmem
 Requires: libfabric >= %{min_libfabric_ver}
 %description -n rpmemd
@@ -594,7 +569,6 @@ and facilitates access to persistent memory over RDMA.
 
 %package -n pmempool
 Summary: Utilities for Persistent Memory
-Group: System Environment/Base
 Requires: libpmem >= %{version}-%{release}
 Requires: libpmemlog >= %{version}-%{release}
 Requires: libpmemblk >= %{version}-%{release}
@@ -621,7 +595,6 @@ and users of the applications based on PMDK libraries.
 
 %package -n daxio
 Summary: Perform I/O on Device DAX devices or zero a Device DAX device
-Group: System Environment/Base
 Requires: libpmem >= %{version}-%{release}
 %description -n daxio
 The daxio utility performs I/O on Device DAX devices or zero
@@ -642,7 +615,6 @@ a device.
 %if %{with pmemcheck}
 %package -n pmreorder
 Summary: Consistency Checker for Persistent Memory
-Group: System Environment/Base
 Requires: python3
 %description -n pmreorder
 The pmreorder tool is a collection of python scripts designed to parse
