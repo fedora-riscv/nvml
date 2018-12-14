@@ -33,7 +33,7 @@
 
 Name:		nvml
 Version:	1.5
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -701,6 +701,10 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Dec 14 2018 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.5-2
+- Remove Group: tag and add ownership information for libpmemobj headers
+  directory.
+
 * Tue Nov 6 2018 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.5-1
 - Update to PMDK version 1.5
   libpmemobj C++ bindings moved to separate package (RHBZ #1647145)
