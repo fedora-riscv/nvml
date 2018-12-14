@@ -288,6 +288,7 @@ probably want to start with this library.
 %{_libdir}/libpmemobj.so
 %{_libdir}/pkgconfig/libpmemobj.pc
 %{_includedir}/libpmemobj.h
+%dir %{_includedir}/libpmemobj
 %{_includedir}/libpmemobj/*.h
 %{_mandir}/man7/libpmemobj.7.gz
 %{_mandir}/man5/poolset.5.gz
