@@ -675,24 +675,16 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 	make check
 %endif
 
-%post   -n libpmem -p /sbin/ldconfig
-%postun -n libpmem -p /sbin/ldconfig
-%post   -n libpmemblk -p /sbin/ldconfig
-%postun -n libpmemblk -p /sbin/ldconfig
-%post   -n libpmemlog -p /sbin/ldconfig
-%postun -n libpmemlog -p /sbin/ldconfig
-%post   -n libpmemobj -p /sbin/ldconfig
-%postun -n libpmemobj -p /sbin/ldconfig
-%post   -n libvmem -p /sbin/ldconfig
-%postun -n libvmem -p /sbin/ldconfig
-%post   -n libvmmalloc -p /sbin/ldconfig
-%postun -n libvmmalloc -p /sbin/ldconfig
-%post   -n libpmempool -p /sbin/ldconfig
-%postun -n libpmempool -p /sbin/ldconfig
+%ldconfig_scriptlets   -n libpmem
+%ldconfig_scriptlets   -n libpmemblk
+%ldconfig_scriptlets   -n libpmemlog
+%ldconfig_scriptlets   -n libpmemobj
+%ldconfig_scriptlets   -n libvmem
+%ldconfig_scriptlets   -n libvmmalloc
+%ldconfig_scriptlets   -n libpmempool
 
 %if %{with fabric}
-%post   -n librpmem -p /sbin/ldconfig
-%postun -n librpmem -p /sbin/ldconfig
+%ldconfig_scriptlets   -n librpmem
 %endif
 
 %if 0%{?__debug_package} == 0
