@@ -29,11 +29,11 @@
 
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.5
+%define upstreamversion 1.5.1
 
 Name:		nvml
-Version:	1.5
-Release:	3%{?dist}
+Version:	1.5.1
+Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -47,8 +47,6 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	man
 BuildRequires:	pkgconfig
-BuildRequires:	gdb
-BuildRequires:	bc
 
 %if %{with ndctl}
 BuildRequires:	ndctl-devel >= %{min_ndctl_ver}
@@ -59,6 +57,11 @@ BuildRequires:	daxctl-devel >= %{min_ndctl_ver}
 BuildRequires:	libfabric-devel >= %{min_libfabric_ver}
 %endif
 
+# for tests
+BuildRequires:	gdb
+BuildRequires:	bc
+BuildRequires:	libunwind-devel
+#BuildRequires:	valgrind
 
 # Debug variants of the libraries should be filtered out of the provides.
 %global __provides_exclude_from ^%{_libdir}/pmdk_debug/.*\\.so.*$
@@ -693,6 +696,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Mar 08 2019 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.5.1-1
+- Update to PMDK version 1.5.1
+
 * Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.5-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
