@@ -29,11 +29,11 @@
 
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.6
+%define upstreamversion 1.6.1
 
 Name:		nvml
-Version:	1.6
-Release:	2%{?dist}
+Version:	1.6.1
+Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -696,6 +696,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Aug 30 2019 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.6.1-1
+- Update to PMDK version 1.6.1
+
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
