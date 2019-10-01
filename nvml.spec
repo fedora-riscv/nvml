@@ -29,16 +29,16 @@
 
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.6.1
+%define upstreamversion 1.7
 
 Name:		nvml
-Version:	1.6.1
+Version:	1.7
 Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
 
-Source0:	https://github.com/pmem/%{name}/archive/%{upstreamversion}.tar.gz#/%{name}-%{upstreamversion}.tar.gz
+Source0:	https://github.com/pmem/pmdk/releases/download/%{upstreamversion}/pmdk-%{upstreamversion}.tar.gz
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -696,6 +696,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Oct 1 2019 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.7-1
+- Update to PMDK version 1.7
+
 * Fri Aug 30 2019 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.6.1-1
 - Update to PMDK version 1.6.1
 
