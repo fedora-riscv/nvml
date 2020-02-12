@@ -334,7 +334,7 @@ Requires: libpmem >= %{version}-%{release}
 %description -n libpmempool
 The libpmempool library provides a set of utilities for off-line
 administration, analysis, diagnostics and repair of persistent memory
-pools created by libpmemlog, libpemblk and libpmemobj libraries.
+pools created by libpmemlog, libpmemblk and libpmemobj libraries.
 
 %files -n libpmempool
 %{_libdir}/libpmempool.so.*
@@ -349,7 +349,7 @@ Requires: libpmem-devel = %{version}-%{release}
 %description -n libpmempool-devel
 The libpmempool library provides a set of utilities for off-line
 administration, analysis, diagnostics and repair of persistent memory
-pools created by libpmemlog, libpemblk and libpmemobj libraries.
+pools created by libpmemlog, libpmemblk and libpmemobj libraries.
 
 %files -n libpmempool-devel
 %{_libdir}/libpmempool.so
@@ -368,7 +368,7 @@ Requires: libpmempool = %{version}-%{release}
 %description -n libpmempool-debug
 The libpmempool library provides a set of utilities for off-line
 administration, analysis, diagnostics and repair of persistent memory
-pools created by libpmemlog, libpemblk and libpmemobj libraries.
+pools created by libpmemlog, libpmemblk and libpmemobj libraries.
 
 This sub-package contains debug variant of the library, providing
 run-time assertions and trace points. The typical way to access the
