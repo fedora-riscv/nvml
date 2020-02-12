@@ -29,11 +29,11 @@
 
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.7
+%define upstreamversion 1.8
 
 Name:		nvml
-Version:	1.7
-Release:	2%{?dist}
+Version:	1.8
+Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -328,121 +328,6 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %doc ChangeLog CONTRIBUTING.md README.md
 
 
-%package -n libvmem
-Summary: Volatile Memory allocation library
-%description -n libvmem
-The libvmem library turns a pool of persistent memory into a volatile
-memory pool, similar to the system heap but kept separate and with
-its own malloc-style API.
-
-%files -n libvmem
-%{_libdir}/libvmem.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libvmem-devel
-Summary: Development files for the Volatile Memory allocation library
-Requires: libvmem = %{version}-%{release}
-%description -n libvmem-devel
-The libvmem library turns a pool of persistent memory into a volatile
-memory pool, similar to the system heap but kept separate and with
-its own malloc-style API.
-
-This sub-package contains libraries and header files for developing
-applications that want to make use of libvmem.
-
-%files -n libvmem-devel
-%{_libdir}/libvmem.so
-%{_libdir}/pkgconfig/libvmem.pc
-%{_includedir}/libvmem.h
-%{_mandir}/man7/libvmem.7.gz
-%{_mandir}/man3/vmem_*.3.gz
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libvmem-debug
-Summary: Debug variant of the Volatile Memory allocation library
-Requires: libvmem = %{version}-%{release}
-%description -n libvmem-debug
-The libvmem library turns a pool of persistent memory into a volatile
-memory pool, similar to the system heap but kept separate and with
-its own malloc-style API.
-
-This sub-package contains debug variant of the library, providing
-run-time assertions and trace points. The typical way to access the
-debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/pmdk_debug.
-
-%files -n libvmem-debug
-%dir %{_libdir}/pmdk_debug
-%{_libdir}/pmdk_debug/libvmem.so
-%{_libdir}/pmdk_debug/libvmem.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libvmmalloc
-Summary: Dynamic to Persistent Memory allocation translation library
-%description -n libvmmalloc
-The libvmmalloc library transparently converts all the dynamic memory
-allocations into persistent memory allocations. This allows the use
-of persistent memory as volatile memory without modifying the target
-application.
-
-The typical usage of libvmmalloc is to load it via the LD_PRELOAD
-environment variable.
-
-%files -n libvmmalloc
-%{_libdir}/libvmmalloc.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libvmmalloc-devel
-Summary: Development files for the Dynamic-to-Persistent allocation library
-Requires: libvmmalloc = %{version}-%{release}
-%description -n libvmmalloc-devel
-The libvmmalloc library transparently converts all the dynamic memory
-allocations into persistent memory allocations. This allows the use
-of persistent memory as volatile memory without modifying the target
-application.
-
-This sub-package contains libraries and header files for developing
-applications that want to specifically make use of libvmmalloc.
-
-%files -n libvmmalloc-devel
-%{_libdir}/libvmmalloc.so
-%{_libdir}/pkgconfig/libvmmalloc.pc
-%{_includedir}/libvmmalloc.h
-%{_mandir}/man7/libvmmalloc.7.gz
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
-%package -n libvmmalloc-debug
-Summary: Debug variant of the Dynamic-to-Persistent allocation library
-Requires: libvmmalloc = %{version}-%{release}
-%description -n libvmmalloc-debug
-The libvmmalloc library transparently converts all the dynamic memory
-allocations into persistent memory allocations. This allows the use
-of persistent memory as volatile memory without modifying the target
-application.
-
-This sub-package contains debug variant of the library, providing
-run-time assertions and trace points. The typical way to access the
-debug version is to set the environment variable LD_LIBRARY_PATH to
-/usr/lib64/pmdk_debug.
-
-%files -n libvmmalloc-debug
-%dir %{_libdir}/pmdk_debug
-%{_libdir}/pmdk_debug/libvmmalloc.so
-%{_libdir}/pmdk_debug/libvmmalloc.so.*
-%license LICENSE
-%doc ChangeLog CONTRIBUTING.md README.md
-
-
 %package -n libpmempool
 Summary: Persistent Memory pool management library
 Requires: libpmem >= %{version}-%{release}
@@ -568,7 +453,8 @@ and facilitates access to persistent memory over RDMA.
 %{_bindir}/rpmemd
 %{_mandir}/man1/rpmemd.1.gz
 
-%endif # _with_fabric
+# _with_fabric
+%endif
 
 
 %package -n pmempool
@@ -614,7 +500,8 @@ a device.
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
-%endif # _with_ndctl
+# _with_ndctl
+%endif
 
 %if %{with pmemcheck}
 %package -n pmreorder
@@ -634,7 +521,8 @@ provided in the command line options to check whether files are in a consistent 
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
-%endif # _with_pmemcheck
+# _with_pmemcheck
+%endif
 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
@@ -682,8 +570,6 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 %ldconfig_scriptlets   -n libpmemblk
 %ldconfig_scriptlets   -n libpmemlog
 %ldconfig_scriptlets   -n libpmemobj
-%ldconfig_scriptlets   -n libvmem
-%ldconfig_scriptlets   -n libvmmalloc
 %ldconfig_scriptlets   -n libpmempool
 
 %if %{with fabric}
@@ -696,6 +582,11 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Wed Feb 12 2020 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.8-1
+- Update to PMDK version 1.8. This release stops shipping
+  libvmem & libvmmalloc. These libraries are now provided by vmem
+  package.
+
 * Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.7-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 

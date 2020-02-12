@@ -1,0 +1,4 @@
+# SPELLING ERRORS
+
+addFilter(r'spelling-error .* en_US (libpmemobj|libpmemblk|libpmemlog|librpmem|transactional|pmdk|pmem)')
+addFilter(r'spelling-error .*\(en_US\) (libpmemobj|libpmemblk|libpmemlog|librpmem|transactional|pmdk|pmem)')
