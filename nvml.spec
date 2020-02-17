@@ -82,7 +82,7 @@ BuildRequires:	libunwind-devel
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340636
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340637
 
-ExclusiveArch: x86_64
+ExclusiveArch: x86_64 ppc64le
 
 %description
 The Persistent Memory Development Kit is a collection of libraries for
