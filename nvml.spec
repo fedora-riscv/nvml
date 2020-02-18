@@ -2,7 +2,6 @@
 # rpmbuild options:
 #   --with | --without fabric
 #   --with | --without ndctl
-#   --define _testconfig <path to custom testconfig.sh>
 
 # do not terminate build if files in the $RPM_BUILD_ROOT
 # directory are not found in %%files (without fabric case)
@@ -39,6 +38,7 @@ License:	BSD
 URL:		http://pmem.io/pmdk
 
 Source0:	https://github.com/pmem/pmdk/releases/download/%{upstreamversion}/pmdk-%{upstreamversion}.tar.gz
+Patch0:		0001-test-py-add-require_free_space.patch
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -47,6 +47,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	man
 BuildRequires:	pkgconfig
+BuildRequires:	python3
 
 %if %{with ndctl}
 BuildRequires:	ndctl-devel >= %{min_ndctl_ver}
@@ -526,6 +527,7 @@ provided in the command line options to check whether files are in a consistent 
 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
+%patch0 -p1
 
 
 %build
@@ -556,13 +558,27 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 %if 0%{?_skip_check} == 1
 	echo "Check skipped"
 %else
-	%if %{defined _testconfig}
-		cp %{_testconfig} src/test/testconfig.sh
-	%else
-		echo "PMEM_FS_DIR=/tmp" > src/test/testconfig.sh
-		echo "PMEM_FS_DIR_FORCE_PMEM=1" >> src/test/testconfig.sh
-		echo 'TEST_BUILD="debug nondebug"' >> src/test/testconfig.sh
-	%endif
+	echo "PMEM_FS_DIR=/tmp"                  > src/test/testconfig.sh
+	echo "PMEM_FS_DIR_FORCE_PMEM=1"         >> src/test/testconfig.sh
+	echo 'TEST_BUILD="debug nondebug"'      >> src/test/testconfig.sh
+	echo "TM=1"                             >> src/test/testconfig.sh
+
+	echo "config = {"                        > src/test/testconfig.py
+	echo "  'pmem_fs_dir': '/tmp',"         >> src/test/testconfig.py
+	echo "  'fs_dir_force_pmem': 1,"        >> src/test/testconfig.py
+	echo "  'build': ['debug', 'release']," >> src/test/testconfig.py
+	echo "  'tm': 1,"                       >> src/test/testconfig.py
+	echo "  'test_type': 'check',"          >> src/test/testconfig.py
+	echo "  'fs': 'all',"                   >> src/test/testconfig.py
+	echo "  'unittest_log_level': 1,"       >> src/test/testconfig.py
+	echo "  'keep_going': False,"           >> src/test/testconfig.py
+	echo "  'timeout': '3m',"               >> src/test/testconfig.py
+	echo "  'dump_lines': 30,"              >> src/test/testconfig.py
+	echo "  'force_enable': None,"          >> src/test/testconfig.py
+	echo "  'device_dax_path': [],"         >> src/test/testconfig.py
+	echo "}"                                >> src/test/testconfig.py
+
+	make pycheck
 	make check
 %endif
 
