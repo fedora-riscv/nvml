@@ -32,7 +32,7 @@
 
 Name:		nvml
 Version:	1.8
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -70,8 +70,12 @@ BuildRequires:	libunwind-devel
 %global __provides_exclude_from ^%{_libdir}/pmdk_debug/.*\\.so.*$
 
 # By design, PMDK does not support any 32-bit architecture.
-# Due to dependency on xmmintrin.h and some inline assembly, it can be
-# compiled only for x86_64 at the moment.
+# Due to dependency on some inline assembly, PMDK can be compiled only
+# on these architectures:
+# - x86_64
+# - ppc64le (experimental)
+# - aarch64 (unmaintained, supporting hardware doesn't exist?)
+#
 # Other 64-bit architectures could also be supported, if only there is
 # a request for that, and if somebody provides the arch-specific
 # implementation of the low-level routines for flushing to persistent
@@ -79,7 +83,6 @@ BuildRequires:	libunwind-devel
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340634
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340635
-# https://bugzilla.redhat.com/show_bug.cgi?id=1340636
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340637
 
 ExclusiveArch: x86_64 ppc64le
@@ -602,6 +605,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Wed Feb 26 2020 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.8-2
+- Enable PPC64LE packages
+
 * Wed Feb 12 2020 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.8-1
 - Update to PMDK version 1.8. This release stops shipping
   libvmem & libvmmalloc. These libraries are now provided by vmem
