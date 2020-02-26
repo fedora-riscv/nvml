@@ -40,6 +40,7 @@ URL:		http://pmem.io/pmdk
 Source0:	https://github.com/pmem/pmdk/releases/download/%{upstreamversion}/pmdk-%{upstreamversion}.tar.gz
 Patch0:		0001-test-py-add-require_free_space.patch
 Patch1:		0002-test-Fix-obj_zones-for-ppc64le.patch
+Patch2:		0003-test-build-obj_defrag_advanced-with-some-optimizatio.patch
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -530,6 +531,7 @@ provided in the command line options to check whether files are in a consistent 
 %setup -q -n pmdk-%{upstreamversion}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 
 %build
