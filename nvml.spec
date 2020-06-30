@@ -32,7 +32,7 @@
 
 Name:		nvml
 Version:	1.8
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -538,6 +538,11 @@ provided in the command line options to check whether files are in a consistent 
 
 
 %build
+# This package calls binutils components directly and would need to pass
+# in flags to enable the LTO plugins
+# Disable LTO
+%define _lto_cflags %{nil}
+
 # For debug build default flags may be overriden to disable compiler
 # optimizations.
 CFLAGS="%{optflags}" \
@@ -605,6 +610,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Jun 30 2020 Jeff Law <law@redhat.com> - 1.8-3
+Disable LTO
+
 * Wed Feb 26 2020 Marcin Ślusarz <marcin.slusarz@intel.com> - 1.8-2
 - Enable PPC64LE packages
 
