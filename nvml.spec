@@ -28,19 +28,16 @@
 
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.8
+%define upstreamversion 1.9
 
 Name:		nvml
-Version:	1.8
-Release:	3%{?dist}
+Version:	1.9
+Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
 
 Source0:	https://github.com/pmem/pmdk/releases/download/%{upstreamversion}/pmdk-%{upstreamversion}.tar.gz
-Patch0:		0001-test-py-add-require_free_space.patch
-Patch1:		0002-test-Fix-obj_zones-for-ppc64le.patch
-Patch2:		0003-test-build-obj_defrag_advanced-with-some-optimizatio.patch
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -50,6 +47,8 @@ BuildRequires:	automake
 BuildRequires:	man
 BuildRequires:	pkgconfig
 BuildRequires:	python3
+BuildRequires:	pandoc
+BuildRequires:	groff
 
 %if %{with ndctl}
 BuildRequires:	ndctl-devel >= %{min_ndctl_ver}
@@ -532,9 +531,6 @@ provided in the command line options to check whether files are in a consistent 
 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 
 %build
@@ -584,10 +580,16 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 	echo "  'fs': 'all',"                   >> src/test/testconfig.py
 	echo "  'unittest_log_level': 1,"       >> src/test/testconfig.py
 	echo "  'keep_going': False,"           >> src/test/testconfig.py
-	echo "  'timeout': '3m',"               >> src/test/testconfig.py
+	echo "  'timeout': '30m',"              >> src/test/testconfig.py
 	echo "  'dump_lines': 30,"              >> src/test/testconfig.py
 	echo "  'force_enable': None,"          >> src/test/testconfig.py
 	echo "  'device_dax_path': [],"         >> src/test/testconfig.py
+	echo "  'granularity': 'cacheline',"    >> src/test/testconfig.py
+	echo "  'enable_admin_tests': False,"   >> src/test/testconfig.py
+	echo "  'fail_on_skip': False,"         >> src/test/testconfig.py
+	echo "  'cacheline_fs_dir': '/tmp',"    >> src/test/testconfig.py
+	echo "  'force_cacheline': True,"       >> src/test/testconfig.py
+	echo "  'granularity': 'cacheline',"    >> src/test/testconfig.py
 	echo "}"                                >> src/test/testconfig.py
 
 	make pycheck
@@ -610,6 +612,13 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Jul 7 2020 Adam Borowski <kilobyte@angband.pl> - 1.9-1
+- Update to PMDK version 1.9
+- Drop upstreamed patches.
+- Add pandoc and groff to B-Reqs.
+- Add required testconfig.py fields.
+- Increase test timeout.
+
 * Tue Jun 30 2020 Jeff Law <law@redhat.com> - 1.8-3
 Disable LTO
 
