@@ -609,12 +609,12 @@ provided in the command line options to check whether files are in a consistent 
 # optimizations.
 CFLAGS="%{optflags}" \
 LDFLAGS="%{?__global_ldflags}" \
-make %{?_smp_mflags} NORPATH=1
+%make_build NORPATH=1
 
 
 # Override LIB_AR with empty string to skip installation of static libraries
 %install
-make install DESTDIR=%{buildroot} \
+%make_install \
 	LIB_AR= \
 	prefix=%{_prefix} \
 	libdir=%{_libdir} \
