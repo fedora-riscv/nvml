@@ -32,7 +32,7 @@
 
 Name:		nvml
 Version:	1.9
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -612,6 +612,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.9-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
 * Tue Jul 7 2020 Adam Borowski <kilobyte@angband.pl> - 1.9-1
 - Update to PMDK version 1.9
 - Drop upstreamed patches.
