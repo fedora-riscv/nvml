@@ -32,12 +32,13 @@
 
 Name:		nvml
 Version:	1.9
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
 
 Source0:	https://github.com/pmem/pmdk/releases/download/%{upstreamversion}/pmdk-%{upstreamversion}.tar.gz
+Patch0:		0001-test-fix-symbol-format-in-the-scope-tests.patch
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -531,6 +532,7 @@ provided in the command line options to check whether files are in a consistent 
 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
+%patch0 -p1
 
 
 %build
@@ -612,6 +614,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Aug 18 2020 Adam Borowski <kilobyte@angband.pl> - 1.9-4
+- Fix FTBFS with new binutils.
+
 * Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.9-3
 - Second attempt - Rebuilt for
   https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
