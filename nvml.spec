@@ -32,13 +32,14 @@
 
 Name:		nvml
 Version:	1.9
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
 
 Source0:	https://github.com/pmem/pmdk/releases/download/%{upstreamversion}/pmdk-%{upstreamversion}.tar.gz
 Patch0:		0001-test-fix-symbol-format-in-the-scope-tests.patch
+Patch1:         nvml-gcc11.patch
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -533,6 +534,7 @@ provided in the command line options to check whether files are in a consistent 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
 %patch0 -p1
+%patch1 -p1
 
 
 %build
@@ -614,6 +616,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Sep 15 2020 Jeff Law <law@redhat.com> - 1.9-5
+- Fix uninitialized variable in tests caught by gcc-11
+
 * Tue Aug 18 2020 Adam Borowski <kilobyte@angband.pl> - 1.9-4
 - Fix FTBFS with new binutils.
 
