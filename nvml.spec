@@ -28,7 +28,7 @@
 
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.9
+%define upstreamversion 1.9.1
 
 Name:		nvml
 Version:	1.9
@@ -614,6 +614,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Oct 2 2020 Adam Borowski <kilobyte@angband.pl> - 1.9.1-1
+- Update to PMDK version 1.9.1
+
 * Tue Aug 18 2020 Adam Borowski <kilobyte@angband.pl> - 1.9-4
 - Fix FTBFS with new binutils.
 
