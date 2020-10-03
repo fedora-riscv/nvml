@@ -31,8 +31,8 @@
 %define upstreamversion 1.9.1
 
 Name:		nvml
-Version:	1.9
-Release:	5%{?dist}
+Version:	1.9.1
+Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
