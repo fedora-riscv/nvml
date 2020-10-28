@@ -127,6 +127,7 @@ convenient.
 %{_includedir}/libpmem.h
 %{_mandir}/man7/libpmem.7.gz
 %{_mandir}/man3/pmem_*.3.gz
+%{_mandir}/man5/pmem_ctl.5.gz
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
