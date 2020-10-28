@@ -28,17 +28,16 @@
 
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.9.1
+%define upstreamversion 1.9.2
 
 Name:		nvml
-Version:	1.9.1
+Version:	1.9.2
 Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
 
 Source0:	https://github.com/pmem/pmdk/releases/download/%{upstreamversion}/pmdk-%{upstreamversion}.tar.gz
-Patch0:		0001-test-fix-symbol-format-in-the-scope-tests.patch
 Patch1:         nvml-gcc11.patch
 
 BuildRequires:	gcc
@@ -534,7 +533,6 @@ provided in the command line options to check whether files are in a consistent 
 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
-%patch0 -p1
 %patch1 -p1
 
 
@@ -617,6 +615,10 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Wed Oct 28 2020 Adam Borowski <kilobyte@angband.pl> - 1.9.2-1
+- Update to PMDK version 1.9.2
+- Install pmem_ctl(5).
+
 * Fri Oct 2 2020 Adam Borowski <kilobyte@angband.pl> - 1.9.1-1
 - Update to PMDK version 1.9.1
 
