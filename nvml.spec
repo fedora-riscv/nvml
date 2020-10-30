@@ -32,7 +32,7 @@
 
 Name:		nvml
 Version:	1.9.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -615,6 +615,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Oct 30 2020 Adam Borowski <kilobyte@angband.pl> - 1.9.2-2
+- Second attempt -- retry a transient failure on ppc64le.
+
 * Wed Oct 28 2020 Adam Borowski <kilobyte@angband.pl> - 1.9.2-1
 - Update to PMDK version 1.9.2
 - Install pmem_ctl(5).
