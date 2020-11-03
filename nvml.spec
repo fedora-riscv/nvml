@@ -28,17 +28,16 @@
 
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.9.2
+%define upstreamversion 1.10
 
 Name:		nvml
-Version:	1.9.2
-Release:	2%{?dist}
+Version:	1.10
+Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
 
 Source0:	https://github.com/pmem/pmdk/releases/download/%{upstreamversion}/pmdk-%{upstreamversion}.tar.gz
-Patch1:         nvml-gcc11.patch
 
 BuildRequires:	gcc
 BuildRequires:	make
@@ -97,7 +96,7 @@ Summary: Low-level persistent memory support library
 %description -n libpmem
 The libpmem provides low level persistent memory support. In particular,
 support for the persistent memory instructions for flushing changes
-to pmem is provided.
+to pmem is provided.  This package provides the v1 API.
 
 %files -n libpmem
 %dir %{_datadir}/pmdk
@@ -113,7 +112,7 @@ Requires: libpmem = %{version}-%{release}
 %description -n libpmem-devel
 The libpmem provides low level persistent memory support. In particular,
 support for the persistent memory instructions for flushing changes
-to pmem is provided.
+to pmem is provided. This package provides the v1 API.
 
 This library is provided for software which tracks every store to
 pmem and needs to flush those changes to durability. Most developers
@@ -137,7 +136,7 @@ Requires: libpmem = %{version}-%{release}
 %description -n libpmem-debug
 The libpmem provides low level persistent memory support. In particular,
 support for the persistent memory instructions for flushing changes
-to pmem is provided.
+to pmem is provided. This package provides the v1 API.
 
 This sub-package contains debug variant of the library, providing
 run-time assertions and trace points. The typical way to access the
@@ -148,6 +147,64 @@ debug version is to set the environment variable LD_LIBRARY_PATH to
 %dir %{_libdir}/pmdk_debug
 %{_libdir}/pmdk_debug/libpmem.so
 %{_libdir}/pmdk_debug/libpmem.so.*
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libpmem2
+Summary: Low-level persistent memory support library
+%description -n libpmem2
+The libpmem provides low level persistent memory support. In particular,
+support for the persistent memory instructions for flushing changes
+to pmem is provided. This package provides the v2 API.
+
+%files -n libpmem2
+%dir %{_datadir}/pmdk
+%{_libdir}/libpmem2.so.*
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libpmem2-devel
+Summary: Development files for the low-level persistent memory library
+Requires: libpmem = %{version}-%{release}
+%description -n libpmem2-devel
+The libpmem provides low level persistent memory support. In particular,
+support for the persistent memory instructions for flushing changes
+to pmem is provided. This package provides the v2 API.
+
+This library is provided for software which tracks every store to
+pmem and needs to flush those changes to durability. Most developers
+will find higher level libraries like libpmemobj to be much more
+convenient.
+
+%files -n libpmem2-devel
+%{_libdir}/libpmem2.so
+%{_libdir}/pkgconfig/libpmem2.pc
+%{_includedir}/libpmem2.h
+%{_mandir}/man7/libpmem2*7.gz
+%{_mandir}/man3/pmem2_*.3.gz
+%license LICENSE
+%doc ChangeLog CONTRIBUTING.md README.md
+
+
+%package -n libpmem2-debug
+Summary: Debug variant of the low-level persistent memory library
+Requires: libpmem = %{version}-%{release}
+%description -n libpmem2-debug
+The libpmem provides low level persistent memory support. In particular,
+support for the persistent memory instructions for flushing changes
+to pmem is provided. This package provides the v2 API.
+
+This sub-package contains debug variant of the library, providing
+run-time assertions and trace points. The typical way to access the
+debug version is to set the environment variable LD_LIBRARY_PATH to
+/usr/lib64/pmdk_debug.
+
+%files -n libpmem2-debug
+%dir %{_libdir}/pmdk_debug
+%{_libdir}/pmdk_debug/libpmem2.so
+%{_libdir}/pmdk_debug/libpmem2.so.*
 %license LICENSE
 %doc ChangeLog CONTRIBUTING.md README.md
 
@@ -533,7 +590,6 @@ provided in the command line options to check whether files are in a consistent 
 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
-%patch1 -p1
 
 
 %build
@@ -595,11 +651,14 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 	echo "  'granularity': 'cacheline',"    >> src/test/testconfig.py
 	echo "}"                                >> src/test/testconfig.py
 
+	rm -f src/test/obj_sync/TEST7
+
 	make pycheck
 	make check
 %endif
 
 %ldconfig_scriptlets   -n libpmem
+%ldconfig_scriptlets   -n libpmem2
 %ldconfig_scriptlets   -n libpmemblk
 %ldconfig_scriptlets   -n libpmemlog
 %ldconfig_scriptlets   -n libpmemobj
@@ -615,6 +674,11 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Sat Oct 31 2020 Adam Borowski <kilobyte@angband.pl> - 1.10-1
+- Update to PMDK version 1.10
+- New set of binary libraries: libpmem2{,-devel,-debug}
+- Drop obj_sync/7 test as it randomly fails on ppc64le (to investigate).
+
 * Fri Oct 30 2020 Adam Borowski <kilobyte@angband.pl> - 1.9.2-2
 - Second attempt -- retry a transient failure on ppc64le.
 
