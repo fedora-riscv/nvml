@@ -39,6 +39,12 @@ URL:		http://pmem.io/pmdk
 
 Source0:	https://github.com/pmem/pmdk/releases/download/%{upstreamversion}/pmdk-%{upstreamversion}.tar.gz
 
+# do_open passes "attr" to util_pool_open which potentially reads that object
+# but do_open never initializes "attr"
+# may read that object
+Patch0:         nvml-gcc11.patch
+
+
 BuildRequires:	gcc
 BuildRequires:	make
 BuildRequires:	glibc-devel
@@ -590,6 +596,7 @@ provided in the command line options to check whether files are in a consistent 
 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
+%patch0 -p1
 
 
 %build
@@ -674,6 +681,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Dec 04 2020 Jeff Law <law@redhat.com> - 1.10-2
+- Fix uninitialized variable in tests caught by gcc-11 (again)
+
 * Sat Oct 31 2020 Adam Borowski <kilobyte@angband.pl> - 1.10-1
 - Update to PMDK version 1.10
 - New set of binary libraries: libpmem2{,-devel,-debug}
