@@ -32,7 +32,7 @@
 
 Name:		nvml
 Version:	1.10
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -681,6 +681,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.10-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Fri Dec 04 2020 Jeff Law <law@redhat.com> - 1.10-2
 - Fix uninitialized variable in tests caught by gcc-11 (again)
 
