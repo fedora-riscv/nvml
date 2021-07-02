@@ -28,21 +28,16 @@
 
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.10
+%define upstreamversion 1.11.0
 
 Name:		nvml
-Version:	1.10
-Release:	3%{?dist}
+Version:	1.11.0
+Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
 
 Source0:	https://github.com/pmem/pmdk/releases/download/%{upstreamversion}/pmdk-%{upstreamversion}.tar.gz
-
-# do_open passes "attr" to util_pool_open which potentially reads that object
-# but do_open never initializes "attr"
-# may read that object
-Patch0:         nvml-gcc11.patch
 
 
 BuildRequires:	gcc
@@ -596,7 +591,6 @@ provided in the command line options to check whether files are in a consistent 
 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
-%patch0 -p1
 
 
 %build
@@ -681,6 +675,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Jul 2 2021 Adam Borowski <kilobyte@angband.pl> - 1.11.0-1
+- Update to PMDK version 1.11.0
+
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.10-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
