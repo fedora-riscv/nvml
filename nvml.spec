@@ -32,7 +32,7 @@
 
 Name:		nvml
 Version:	1.11.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -676,6 +676,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.11.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Fri Jul 2 2021 Adam Borowski <kilobyte@angband.pl> - 1.11.0-2
 - Disable pmemset tests, experimental part that's not a part of the official
   release and somehow fails.
