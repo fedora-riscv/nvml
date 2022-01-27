@@ -32,12 +32,13 @@
 
 Name:		nvml
 Version:	1.11.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
 
 Source0:	https://github.com/pmem/pmdk/releases/download/%{upstreamversion}/pmdk-%{upstreamversion}.tar.gz
+Patch0:		0001-test-don-t-print-the-address-of-a-FILE-after-fclose.patch
 
 
 BuildRequires:	gcc
@@ -591,6 +592,7 @@ provided in the command line options to check whether files are in a consistent 
 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
+%patch0 -p1
 
 
 %build
@@ -676,6 +678,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Thu Jan 27 2022 Adam Borowski <kilobyte@angband.pl> - 1.11.1-3
+- Fix FTBFS with gcc-12.
+
 * Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.11.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
