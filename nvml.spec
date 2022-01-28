@@ -32,7 +32,7 @@
 
 Name:		nvml
 Version:	1.11.1
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -656,6 +656,8 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 	rm -f src/test/obj_sync/TEST7
 	rm -f src/test/pmemset*/TEST*
+	rm -f src/test/rpmemd_dbg/TEST*
+	rm -f src/test/rpmemd_log/TEST*
 
 	make pycheck
 	make check
@@ -678,6 +680,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Jan 28 2022 Adam Borowski <kilobyte@angband.pl> - 1.11.1-4
+- Drop two rpmemd tests.
+
 * Thu Jan 27 2022 Adam Borowski <kilobyte@angband.pl> - 1.11.1-3
 - Fix FTBFS with gcc-12.
 
