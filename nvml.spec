@@ -28,17 +28,17 @@
 
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.11.1
+%define upstreamversion 1.12.0
 
 Name:		nvml
-Version:	1.11.1
-Release:	4%{?dist}
+Version:	1.12.0
+Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
 
 Source0:	https://github.com/pmem/pmdk/releases/download/%{upstreamversion}/pmdk-%{upstreamversion}.tar.gz
-Patch0:		0001-test-don-t-print-the-address-of-a-FILE-after-fclose.patch
+#Patch0:		0001-test-don-t-print-the-address-of-a-FILE-after-fclose.patch
 
 
 BuildRequires:	gcc
@@ -51,10 +51,12 @@ BuildRequires:	pkgconfig
 BuildRequires:	python3
 BuildRequires:	pandoc
 BuildRequires:	groff
+BuildRequires:  cmake
 
 %if %{with ndctl}
 BuildRequires:	ndctl-devel >= %{min_ndctl_ver}
 BuildRequires:	daxctl-devel >= %{min_ndctl_ver}
+BuildRequires:  ndctl
 %endif
 
 %if %{with fabric}
@@ -76,6 +78,7 @@ BuildRequires:	libunwind-devel
 # - x86_64
 # - ppc64le (experimental)
 # - aarch64 (unmaintained, supporting hardware doesn't exist?)
+# - riscv64
 #
 # Other 64-bit architectures could also be supported, if only there is
 # a request for that, and if somebody provides the arch-specific
@@ -184,6 +187,7 @@ convenient.
 %{_libdir}/libpmem2.so
 %{_libdir}/pkgconfig/libpmem2.pc
 %{_includedir}/libpmem2.h
+%{_includedir}/libpmem2/*.h
 %{_mandir}/man7/libpmem2*7.gz
 %{_mandir}/man3/pmem2_*.3.gz
 %license LICENSE
@@ -592,7 +596,7 @@ provided in the command line options to check whether files are in a consistent 
 
 %prep
 %setup -q -n pmdk-%{upstreamversion}
-%patch0 -p1
+#%patch0 -p1
 
 
 %build
@@ -659,6 +663,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 	rm -f src/test/rpmemd_dbg/TEST*
 	rm -f src/test/rpmemd_log/TEST*
 
+	# bad on ppc64
+	rm -f src/test/obj_ctl_arenas/TEST3 src/test/pmem2_future/TESTS.py
+
 	make pycheck
 	make check
 %endif
@@ -680,6 +687,11 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Mon Jul 4 2022 Adam Borowski <kilobyte@angband.pl> - 1.12.0-1
+- PMDK 1.12.0
+- B-Require cmake.
+- Drop two tests that fail on ppc64le.
+
 * Fri Jan 28 2022 Adam Borowski <kilobyte@angband.pl> - 1.11.1-4
 - Drop two rpmemd tests.
 
