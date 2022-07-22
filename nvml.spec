@@ -32,7 +32,7 @@
 
 Name:		nvml
 Version:	1.12.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -687,6 +687,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.12.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
 * Mon Jul 4 2022 Adam Borowski <kilobyte@angband.pl> - 1.12.0-1
 - PMDK 1.12.0
 - B-Require cmake.
