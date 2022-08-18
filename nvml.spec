@@ -32,7 +32,7 @@
 
 Name:		nvml
 Version:	1.12.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -662,6 +662,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 	rm -f src/test/pmemset*/TEST*
 	rm -f src/test/rpmemd_dbg/TEST*
 	rm -f src/test/rpmemd_log/TEST*
+	rm -f src/test/obj_zones/TEST*
 
 	# bad on ppc64
 	rm -f src/test/obj_ctl_arenas/TEST3 src/test/pmem2_future/TESTS.py
@@ -687,6 +688,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Thu Aug 18 2022 Adam Borowski <kilobyte@angband.pl> - 1.12.0-3
+- Disable a test that times out on some filesystems.
+
 * Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.12.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
