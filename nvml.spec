@@ -28,11 +28,11 @@
 
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
-%define upstreamversion 1.12.0
+%define upstreamversion 1.12.1
 
 Name:		nvml
-Version:	1.12.0
-Release:	3%{?dist}
+Version:	%{upstreamversion}
+Release:	1%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD
 URL:		http://pmem.io/pmdk
@@ -688,6 +688,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Sat Aug 27 2022 Adam Borowski <kilobyte@angband.pl> - 1.12.1-1
+- PMDK 1.12.1
+
 * Thu Aug 18 2022 Adam Borowski <kilobyte@angband.pl> - 1.12.0-3
 - Disable a test that times out on some filesystems.
 
