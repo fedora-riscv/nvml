@@ -26,6 +26,12 @@
 # pmemcheck is not packaged by Fedora
 %bcond_with pmemcheck
 
+%if 0%{?rhel}
+%bcond_with pandoc
+%else
+%bcond_without pandoc
+%endif
+
 %define min_libfabric_ver 1.4.2
 %define min_ndctl_ver 60.1
 %define upstreamversion 1.12.1
@@ -49,8 +55,6 @@ BuildRequires:	automake
 BuildRequires:	man
 BuildRequires:	pkgconfig
 BuildRequires:	python3
-BuildRequires:	pandoc
-BuildRequires:	groff
 BuildRequires:  cmake
 
 %if %{with ndctl}
@@ -61,6 +65,11 @@ BuildRequires:  ndctl
 
 %if %{with fabric}
 BuildRequires:	libfabric-devel >= %{min_libfabric_ver}
+%endif
+
+%if %{with pandoc}
+BuildRequires:	groff
+BuildRequires:	pandoc
 %endif
 
 # for tests
