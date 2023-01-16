@@ -697,6 +697,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Mon Jan 16 2023 Adam Borowski <kilobyte@angband.pl> - 1.12.1-2
+- Don't build docs from source on RHEL [Yaakov Selkowitz]
+
 * Sat Aug 27 2022 Adam Borowski <kilobyte@angband.pl> - 1.12.1-1
 - PMDK 1.12.1
 
