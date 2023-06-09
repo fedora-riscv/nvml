@@ -586,6 +586,7 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 	rm -f src/test/rpmemd_dbg/TEST*
 	rm -f src/test/rpmemd_log/TEST*
 	rm -f src/test/obj_zones/TEST*
+	rm -f src/test/ex_libpmemobj/TESTS.py
 
 	# bad on ppc64
 	rm -f src/test/obj_ctl_arenas/TEST3 src/test/pmem2_future/TESTS.py
