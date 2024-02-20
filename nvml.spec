@@ -32,7 +32,7 @@
 
 Name:		nvml
 Version:	%{upstreamversion}
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Persistent Memory Development Kit (formerly NVML)
 License:	BSD-3-Clause
 URL:		http://pmem.io/pmdk
@@ -88,7 +88,7 @@ BuildRequires:	libunwind-devel
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340635
 # https://bugzilla.redhat.com/show_bug.cgi?id=1340637
 
-ExclusiveArch: x86_64 ppc64le
+ExclusiveArch: x86_64 ppc64le riscv64
 
 %description
 The Persistent Memory Development Kit is a collection of libraries for
@@ -503,6 +503,9 @@ cp utils/pmdk.magic %{buildroot}%{_datadir}/pmdk/
 
 
 %changelog
+* Tue Feb 20 2024 Zhengyu He <hezhy472013@gmail.com> - 2.0.1-4
+- Add support for riscv64
+
 * Thu Jan 25 2024 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
 
